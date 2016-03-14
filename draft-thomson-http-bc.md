@@ -149,7 +149,8 @@ will not be used unless the proxy is known to the client.
 
 A proxy cache MUST therefore be expressly configured or discovered.  This
 produces a name and possibly a port number for the proxy.  The proxy MUST be
-contacted using HTTPS [RFC2818] and authenticated using that name.
+contacted using HTTPS [RFC2818] and authenticated using the configured or
+discovered name.
 
 
 # Performance Optimizations

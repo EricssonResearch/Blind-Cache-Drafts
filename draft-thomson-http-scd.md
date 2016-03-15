@@ -86,7 +86,8 @@ delivery responsibility to servers that are highly optimized for that task.
 
 A major drawback of existing solutions for content distribution is that an
 origin is required to yield control over their content to the CDN.  A CDN is
-able to see and modify content that they distribute.
+able to see and modify content that they distribute.  In some cases, expediency
+dictates that the CDN be given control over the entire origin.
 
 There are few technical mechanisms in place to limit the capabilities of a CDN.
 Mechanisms like content security policy [CSP] and sub-resource integrity [SRI]

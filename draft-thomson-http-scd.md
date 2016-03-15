@@ -55,6 +55,12 @@ informative:
       - ins: J. Weinberger
     date: 2015-11-13
     target: https://w3c.github.io/webappsec-subresource-integrity
+  CORS:
+    title: Cross-Origin Resource Sharing
+    author:
+      - ins: A. van Kesteren
+    date: 2014-01-16
+    target: https://www.w3.org/TR/cors/
   I-D.thomson-http-content-signature:
   I-D.ietf-httpbis-encryption-encoding:
 
@@ -281,6 +287,9 @@ resource URLs.  For instance, employing a web crawler on a web site might reveal
 the identity of numerous resources and the location of the any out-of-band
 content for those resources.
 
+Nonetheless, confidentiality protection MUST be used to prevent cross-origin
+theft of confidential data (see {{sec-cors}}).
+
 
 # Resource Map {#map}
 
@@ -333,6 +342,7 @@ made to the origin server.  These requests MUST be made using HTTP over TLS
 (HTTPS) [RFC2818] only.  Though there is a lesser requirement for
 confidentiality, requests made to the CDN cache MUST also be secured using HTTPS.
 
+
 ## Confidentiality Protection Limitations
 
 Content that requires only integrity protection can be safely distributed by a
@@ -354,6 +364,44 @@ access.
 Clients that wish to retain control over the confidentiality of responses can
 omit the out-of-band label from the Accept-Encoding header field on requests,
 thereby indicating that a direct response is necessary.
+
+
+## Cross-Origin Access {#sec-cors}
+
+The content delegation creates the possibility that an origin server could adopt
+remotely hosted content.  On the web, this is normally limited by Cross-Origin
+Resource Sharing [CORS], which requires that a client first request permission
+to make a resource accessible to another origin.
+
+This document describes a method whereby content hosted on a remote server can
+be made accessible to another origin.  The content of the out-of-band resource is
+written into the content of a response from the origin.  All an origin needs to
+make this happen is knowledge of the identity of the out-of-band resource, something
+that might be difficult based on the guidance in {{urls}}, but not infeasible.
+A client requests this content using any ambient authority available to it (such
+as HTTP authentication header fields and cookies).
+
+The simplest option for reducing the ability to steal content in this fashion is
+to require that the origin demonstrate that it knows the content of the
+resource.  Unfortunately, this demonstration is difficult without imposing
+significant performance penalties, so we require a lesser assurance: that the
+origin knows how to decrypt the content.
+
+This makes content confidentiality {{confidentiality}} mandatory and limits the
+resources that can be stolen by an origin to those that are already encrypted.
+Most importantly, only resources for which the origin knows the encryption key
+can be stolen.
+
+For this protection to be effective, origins MUST use different encryption keys
+for resources with different sets of authorized recipients.  Otherwise, an
+attacker might learn the encryption key for one resource then use that to
+decrypt a resource that it is not authorized to read.
+
+Resources that rely on signature-based integrity protection are made only
+marginally more difficult to steal, since the origin needs to learn the signing
+public key.  However, this is not expected to be difficult, since
+confidentiality protection for public keys.  Resources that rely on hash-based
+integrity protection require that the origin learn the hash of the resource.
 
 
 ## Traffic Analysis
@@ -384,3 +432,11 @@ content encoding can be used to further obscure lengths.
 # IANA Considerations {#iana}
 
 This document has no IANA actions.
+
+
+--- back
+
+# Acknowledgements
+
+Magnus Westerlund noted the potential for a violation of the cross origin
+protections offered in browsers.

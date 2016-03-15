@@ -94,8 +94,8 @@ Mechanisms like content security policy [CSP] and sub-resource integrity [SRI]
 can be used to prevent modification of resources in some contexts, but these
 mechanisms are limited in what they can protect and they can impose certain
 operational costs.  For the most part, operators of origin servers either limit
-the content that is served using the CDN or rely on legal methods such as
-contracts and courts to proscribe bad behavior.
+the content that is served using the CDN or rely on non-technical measures such
+as contracts and courts to proscribe bad behavior.
 
 
 ## Secure Content Delegation

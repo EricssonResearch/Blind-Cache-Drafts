@@ -122,11 +122,12 @@ for specific resources.  This can dramatically improve performance where a
 client needs to acquire multiple delegated resources.
 
 No new mechanisms are described in this document; the application of several
-existing protocol mechanisms to this problem is described.  An origin server can
-use these mechanisms to take advantage of content distribution networks where
-concerns about security might have otherwise prevented their use.  This might be
-for content that was previously considered too sensitive for third-party
-distribution, or for a CDN provider that might not otherwise be used.
+existing and separately-proposed protocol mechanisms to this problem is
+described.  An origin server can use these mechanisms to take advantage of
+content distribution networks where concerns about security might have otherwise
+prevented their use.  This might be for content that was previously considered
+too sensitive for third-party distribution, or for a CDN provider that might not
+otherwise be used.
 
 
 ## Notational Conventions

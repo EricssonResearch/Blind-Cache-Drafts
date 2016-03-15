@@ -224,10 +224,10 @@ mapping function with a secret input such as HMAC [RFC2104].
 
 Without other information, this would prevent the CDN from learning which
 resources are requested from the origin server by observing the requests that it
-serves for out-of-band content.  Though in many cases, information about the
+serves for out-of-band content.  Note that in some cases, information about the
 resource is readily obtainable by the CDN cache, see {{confidentiality}}, an
-unpredictable mapping ensures that other protection mechanisms can be
-effective if possible.
+unpredictable mapping ensures that other protection mechanisms can be effective
+if possible.
 
 
 # Content Integrity {#integrity}

@@ -117,9 +117,9 @@ Note that the guarantees provided by confidentiality protection are not strong,
 see {{confidentiality}} for details.
 
 In addition to these basic components, a fourth mechanism provides a client with
-the ability to learn metadata of resources prior to making a request of an
-origin server.  This can dramatically improve performance where a client needs
-to acquire multiple delegated resources.
+the ability to learn resource metadata from the origin prior to making a request
+for specific resources.  This can dramatically improve performance where a
+client needs to acquire multiple delegated resources.
 
 No new mechanisms are described in this document; the application of several
 existing protocol mechanisms to this problem is described.  An origin server can

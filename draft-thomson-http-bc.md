@@ -109,6 +109,36 @@ host content apply to the proxy cache.  Thus, integrity and confidentiality
 protections against the proxy cache are the primary consideration.
 
 
+## Signaling Presence of a Proxy
+
+Without a clear signal from the client that a caching proxy is present, an
+origin is unable to send a response with out-of-band encoding.  A value of
+`out-of-band` in the Accept-Encoding header field might only indicate
+willingness to use the secure content delegation mechanism.
+
+The BC header field indicates that a client is connected to a proxy cache that
+it is willing to use for out-of-band requests.  The value of the BC header field
+is a simple boolean, represented as a "0" or "1".  A value that is present and
+set to "1" indicates that a proxy cache is present and available for use.  This
+header field can be used even if the current request was not routed via a proxy.
+
+~~~ abnf
+   BC = "0" / "1"
+~~~
+
+Issue:
+
+: What signal do we need from the proxy cache that it supports this mode of
+  operation?  Can we expect that a proxy cache will happily accept a request for
+  an HTTPS URL?
+
+Issue:
+
+: Do we want to identify the proxy so that the origin can make some sort of
+  judgment about the proxy?  Probably not.  We shouldn't be relying on the
+  origin server making judgments about the character of proxies.
+
+
 ## Enabling Proxy Use
 
 It is not sufficient to couple the acceptance and use of out-of-band content
@@ -139,6 +169,12 @@ integrity and encryption, such as the M-I header field [I-D.thomson-http-mice]
 or the Crypto-Key header field [I-D.ietf-httpbis-encryption-encoding].  Absence
 of these header fields indicate an error on the part of the origin server, since
 integrity and confidentiality protection are mandatory.
+
+Alternative:
+
+: The `proxy` attribute might be replaced by a rule that stated that same-origin
+  out-of-band encoding implied permission to route via a proxy.  However, the
+  gain here is minimal, it saves only on the explicit indication.
 
 
 ## Proxy Identification and Authentication
@@ -202,4 +238,4 @@ idempotent methods only).
 
 # IANA Considerations {#iana}
 
-This document has no IANA actions.
+This document has no IANA actions.  It should.

@@ -174,54 +174,15 @@ The following options are possible:
 * Clients can speculatively make requests to a proxy cache based on information
   it learns from a resource map.  To avoid a potential waste of resources as a
   result of receiving complete responses, these might either be limited to HEAD
-  requests; HTTP/2 [RFC7540] flow control might be used to allow only limited information
-  to be sent.
+  requests; HTTP/2 [RFC7540] flow control might be used to allow only limited
+  information to be sent.
 
 * The origin server might provide the proxy cache with "prefetch" link relations
   in responses to requests for secondary resources.  These link relations might
-  identify other resources that the proxy might retrieve speculatively.
+  identify other resources that the proxy might retrieve speculatively.  This
+  does not improve the latency of the initial request, but could improve
+  subsequent requests.
 
-(Below follows GE interpretation of text; 18/2-16)
-This behaviour is illustrated below.
-
-~~~ drawing
-   Client           Proxy cache                      Server
-     |                  |                               |
-     | Request          |                               |
-     +------------------------------------------------->|
-     |                  |                               |
-     |                Response + resource map + 'proxy' |
-     |<-------------------------------------------------+
-     |                  |                               |
-     | Request          |                               |
-     +----------------->|                               |
-     |                  |   Request                     |
-     |                  +------------------------------>|
-     |                  |   Response + Link: prefetch   |
-     |                  |<------------------------------+
-     |              200 |                               |
-     |<-----------------+                               |
-     |                  |                               |
-     |                  |   Request                     |
-     |                  +------------------------------>|
-     |                  |   Response                    |
-     |                  |<------------------------------|
-     |   Server push    |                               |
-     |<--------------(o)+                               |
-     | HEAD             |                               |
-     +(o)-------------->|                               |
-     |                  |                               |
-     |<--------------(o)+                               |
-     |   Server push    |                               |
-     |   Response       |                               |
-     |<-----------------+                               |
-     |                  |                               |
-     | Request          |                               |
-     +-----------------+|                               |
-     |         Response |                               |
-     <------------------+                               |
-~~~
-{: #ex-oob title="Using Out-of-Band Content Encoding"}
 
 # Security Considerations {#security}
 

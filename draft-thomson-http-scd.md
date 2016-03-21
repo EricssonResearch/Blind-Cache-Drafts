@@ -1,7 +1,7 @@
 ---
 title: An Architecture for Secure Content Delegation using HTTP
 abbrev: Secure Content Delegation
-docname: draft-eriksson-http-scd
+docname: draft-thomson-http-scd
 date: 2016
 category: std
 ipr: trust200902
@@ -10,6 +10,11 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs, docmapping]
 
 author:
+ -
+    ins: M. Thomson
+    name: Martin Thomson
+    org: Mozilla
+    email: martin.thomson@gmail.com
  -
     ins: G. Eriksson
     name: Göran AP Eriksson
@@ -20,11 +25,6 @@ author:
     name: Christer Holmberg
     org: Ericsson
     email: christer.holmberg@ericsson.com
- -
-    ins: M. Thomson
-    name: Martin Thomson
-    org: Mozilla
-    email: martin.thomson@gmail.com
 
 
 normative:

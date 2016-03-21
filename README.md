@@ -1,1 +1,1 @@
-# bc_proxy_cache
+# Drafts related to Blind Cache.

@@ -387,7 +387,7 @@ resource.  Unfortunately, this demonstration is difficult without imposing
 significant performance penalties, so we require a lesser assurance: that the
 origin knows how to decrypt the content.
 
-This makes content confidentiality {{confidentiality}} mandatory and limits the
+This makes content confidentiality ({{confidentiality}}) mandatory and limits the
 resources that can be stolen by an origin to those that are already encrypted.
 Most importantly, only resources for which the origin knows the encryption key
 can be stolen.

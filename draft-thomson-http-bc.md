@@ -69,9 +69,7 @@ and ensuring that clients receive responses to cached requests more quickly.
 
 Proxy caching is the most common configuration for shared caching.  A proxy
 cache is either explicitly configured by a client, discovered as a result of
-being automatically configured.  Network operators or other on-path network
-entities can also interpose a transparent caching proxy, which removes the
-requirement for discovery or configuration.
+being automatically configured.
 
 HTTPS [RFC2818] prevents the use of proxies by creating an authenticated
 end-to-end connection to the origin server or its gateway that is authenticated.

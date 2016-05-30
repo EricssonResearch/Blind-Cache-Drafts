@@ -40,13 +40,18 @@ normative:
       - ins: C. Holmberg
       - ins: M. Thomson
     date: 2016-02-07
-    target: draft-eriksson-http-scd.html
   I-D.ietf-httpbis-encryption-encoding:
   I-D.thomson-http-mice:
 
 informative:
   RFC7231:
   I-D.reschke-http-oob-encoding:
+  HINTS:
+    title: "Resource Hints"
+    author:
+      - ins: I. Grigorik
+    date: 2015-05-27
+    seriesinfo: W3C TR
 
 --- abstract
 
@@ -64,23 +69,26 @@ and ensuring that clients receive responses to cached requests more quickly.
 
 Proxy caching is the most common configuration for shared caching.  A proxy
 cache is either explicitly configured by a client, discovered as a result of
-being automatically configured, or interposed automatically by an on-path
-network entity (this latter case being called a transparent proxy).
+being automatically configured.  Network operators or other on-path network
+entities can also interpose a transparent caching proxy, which removes the
+requirement for discovery or configuration.
 
 HTTPS [RFC2818] prevents the use of proxies by creating an authenticated
 end-to-end connection to the origin server or its gateway that is authenticated.
 This provides a critical protection against man-in-the-middle attacks, but it
 also prevents the proxy from acting as a shared cache.
 
-Thus, clients use the CONNECT pseudo-method (Section 4.3.6 of [RFC7231]) with any
-explicitly configured proxies to create an end-to-end tunnel and will refuse to
-send a query for an `https` URI to a proxy.
+Clients do not direct queries for `https` URIs to proxies.  Clients configured
+with a proxy use the CONNECT pseudo-method (Section 4.3.6 of [RFC7231]) with any
+explicitly configured or discovered proxies to create an end-to-end tunnel.
+Transparent proxies are unable to intercept connections that are protected with
+TLS.
 
-This document describes a method for conditionally delegating the hosting of
-secure content to the same server.  This delegation allows a client to send a
-request for an `https` resource via a proxy rather than insisting on an
-end-to-end TLS connection.  This enables shared caching for a limited set of
-`https` resources, as selected by the server.
+This document describes a method that enables shared caching for a limited set
+of `https` resources, as selected by the server.  The server conditionally
+delegates the hosting of secure content to itself.  This delegation includes a
+marker that signals permission for a client to send a request for an `https`
+resource via a proxy rather than insisting on an end-to-end TLS connection.
 
 
 ## Notational Conventions
@@ -97,23 +105,27 @@ operates an HTTP cache [RFC7234].
 
 The secure content delegation mechanism defined in [SCD] is used to create a
 separate resource that contains encrypted and integrity protected content.
+To enable caching, the primary and secondary servers can be the same server.
 
-A client that signals a willingness to support this feature can be provided an
-response with an out-of-band encoding [I-D.reschke-http-oob-encoding] that
-identifies this resource.  The client can then make a request for that content
-to a proxy cache rather than directly to the origin server.
+A client that signals a willingness to support delegation is provided with a
+response that uses out-of-band encoding [I-D.reschke-http-oob-encoding].  The
+out-of-band encoding identifies a secondary resource and includes a signal that
+indicates that the client is permitted to use a proxy.  The client is then able
+to request the secondary resource from a proxy cache rather than directly to the
+origin server.
 
-In this document, the origin server is able to act in the role of the CDN in
-[SCD].  However, all of the considerations that apply to having a third party
-host content apply to the proxy cache.  Thus, integrity and confidentiality
-protections against the proxy cache are the primary consideration.
+In this document, the origin server is able to act in the role of the secondary
+server in [SCD].  However, all of the considerations that apply to having a
+secondary server host content apply instead to the proxy cache.  Thus, integrity
+and confidentiality protections against the proxy cache are the primary
+consideration.
 
 
 ## Signaling Presence of a Proxy
 
 Without a clear signal from the client that a caching proxy is present, an
-origin is unable to send a response with out-of-band encoding.  A value of
-`out-of-band` in the Accept-Encoding header field might only indicate
+origin server is unable to send a response with out-of-band encoding.  A value
+of `out-of-band` in the Accept-Encoding header field might only indicate
 willingness to use the secure content delegation mechanism.
 
 The BC header field indicates that a client is connected to a proxy cache that
@@ -132,36 +144,36 @@ Issue:
   operation?  Can we expect that a proxy cache will happily accept a request for
   an HTTPS URL?
 
-Issue:
-
-: Do we want to identify the proxy so that the origin can make some sort of
-  judgment about the proxy?  Probably not.  We shouldn't be relying on the
-  origin server making judgments about the character of proxies.
+This signal purposefully does not identify the proxy.  This avoids exposing
+information about the proxy to clients that are using private proxies.  It also
+avoids origin servers making judgments about the character of proxies.
 
 
 ## Enabling Proxy Use
 
 It is not sufficient to couple the acceptance and use of out-of-band content
 encoding with the use of a proxy.  Without an additional signal, a resource
-using secure content delegation to a CDN [SCD] could trigger a request via a
-proxy.
+using secure content delegation to a secondary server [SCD] could trigger a
+request via a proxy.
 
-The security properties of delegation via a CDN and via a caching proxy are
-similar only to the extent that a third party is involved.  However, it might be
-the case that the CDN has a stronger relationship with the origin server and
-additional constraints on its actions, such as contractual limitations.  Such
-constraints might make delegation to the CDN acceptable to the origin server.  A
-caching proxy might not be considered acceptable.
+The security properties of delegation via a secondary server and via a caching
+proxy are similar only to the extent that a third party is involved.  However,
+it might be the case that a secondary server has a stronger relationship with
+the primary server and additional constraints on its actions, such as
+contractual limitations.  Such constraints might make it feasible to delegate to
+a secondary server selected by the primary server.  A caching proxy might not be
+considered acceptable in the same way.
 
-Therefore, a clear signal from the origin server is needed to allow the client
+Therefore, a clear signal from the primary server is needed to allow the client
 to identify which resources are safe to retrieve from a proxy-cache.  A `proxy`
 extension to the JSON format defined in [I-D.reschke-http-oob-encoding] is added
 that signals to the client that the out-of-band content MAY be retrieved by
 making a request to a proxy.
 
-The `proxy` attribute is a boolean value.  In its absence, the value is assumed
-to be false.  If present and set to true, a client can send the request for the
-out-of-band content to a proxy instead of the identified server.
+The `proxy` member is a boolean value that exists at the top level of the
+out-of-band JSON document.  In its absence, the value is assumed to be false.
+If present and set to true, a client can send the request for the out-of-band
+content to a proxy instead of the identified server.
 
 Clients MUST NOT send a request via a proxy if the message containing the
 out-of-band content encoding does not include header fields for message
@@ -169,12 +181,6 @@ integrity and encryption, such as the M-I header field [I-D.thomson-http-mice]
 or the Crypto-Key header field [I-D.ietf-httpbis-encryption-encoding].  Absence
 of these header fields indicate an error on the part of the origin server, since
 integrity and confidentiality protection are mandatory.
-
-Alternative:
-
-: The `proxy` attribute might be replaced by a rule that stated that same-origin
-  out-of-band encoding implied permission to route via a proxy.  However, the
-  gain here is minimal, it saves only on the explicit indication.
 
 
 ## Proxy Identification and Authentication
@@ -210,14 +216,14 @@ The following options are possible:
 * Clients can speculatively make requests to a proxy cache based on information
   it learns from a resource map.  To avoid a potential waste of resources as a
   result of receiving complete responses, these might either be limited to HEAD
-  requests; HTTP/2 [RFC7540] flow control might be used to allow only limited
-  information to be sent.
+  requests; alternatively, HTTP/2 [RFC7540] flow control might be used to allow
+  only limited information to be sent.
 
 * The origin server might provide the proxy cache with "prefetch" link relations
-  in responses to requests for secondary resources.  These link relations might
-  identify other resources that the proxy might retrieve speculatively.  This
-  does not improve the latency of the initial request, but could improve
-  subsequent requests.
+  [HINTS] in responses to requests for secondary resources.  These link
+  relations might identify other resources that the proxy might retrieve
+  speculatively.  This does not improve the latency of the initial request, but
+  could improve subsequent requests.
 
 
 # Security Considerations {#security}

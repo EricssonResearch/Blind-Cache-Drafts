@@ -79,7 +79,7 @@ secondary server from learning about the content.
 # Content Distribution Security
 
 The distribution of content on the web at scale is necessarily highly
-distributed.  Large amounts of content needs large numbers of servers.  And
+distributed. Large amounts of content needs large numbers of servers.  And
 distributing those servers closer to clients has a significant, positive impact
 on performance.
 
@@ -96,12 +96,12 @@ most part, server operators are forced to limit the content that is served on
 servers that are not directly under their control or rely on non-technical
 measures such as contracts and courts to proscribe bad behavior.
 
-
 ## Secure Content Delegation
 
 This document describes how an primary origin server might securely delegate the
-responsibility for serving content to a secondary server.  The solution
-comprises three basic components:
+responsibility for serving content to a secondary server.
+
+The solution comprises three basic components:
 
 * A delegation component allows a primary server to delegate specific resources
   to another server.
@@ -116,9 +116,9 @@ Note that the guarantees provided by confidentiality protection are not strong,
 see {{confidentiality}} for details.
 
 In addition to these basic components, a fourth mechanism provides a client with
-the ability to learn resource metadata from the origin prior to making a request
-for specific resources.  This can dramatically improve performance where a
-client needs to acquire multiple delegated resources.
+the ability to learn resource metadata from the primary server prior to making a
+request for specific resources.  This can dramatically improve performance where
+a client needs to acquire multiple delegated resources.
 
 No new mechanisms are described in this document; the application of several
 existing and separately-proposed protocol mechanisms to this problem is
@@ -244,7 +244,7 @@ A progressive integrity mechanism like the one described in
 penalties imposed by the integrity protection.  Progressive integrity allows for
 consumption of content as it is delivered without losing integrity protection.
 
-A response from the origin server could include an M-I header field with an
+A response from the primary server could include an M-I header field with an
 integrity proof, allowing the content to be delivered out-of-band without any
 additional header fields.
 
@@ -279,7 +279,7 @@ protections against cross-origin theft of confidential data (see {{sec-cors}}).
 
 Learning about header fields and out-of-band cache locations for resources in
 advance of needing to make requests to those resources allows a client to avoid
-making requests to the origin server.  This can greatly improve the performance
+making requests to the primary server.  This can greatly improve the performance
 of applications that make multiple requests of the same server, such as web
 browsing or video streaming.
 
@@ -290,7 +290,7 @@ this requires relatively little data to describe a number of resources.  Once
 this information is available, the client no longer needs to contact the origin
 server to acquire the described resources.
 
-This approach has some signficant deployment drawbacks, so explicit data formats
+This approach has some significant deployment drawbacks, so explicit data formats
 for carrying this data might be defined.
 
 Note:
@@ -307,12 +307,12 @@ This request would omit any indication of support for out-of-band content coding
 from the Accept-Encoding header field, plus a link relation indicating the
 secondary resource and the reason for failure.
 
-An origin server can use this information to inform choices about whether to use
+A primary server can use this information to do informed choices about whether to use
 content delegation.
 
 Non-idempotent requests cannot be safely retried.  Therefore, clients cannot
-retry a a request and provide information about errors to the origin server.
-For this reason, origin servers SHOULD NOT delegate content for non-idempotent
+retry a a request and provide information about errors to the primary server.
+For this reason, primary servers SHOULD NOT delegate content for non-idempotent
 methods.
 
 
@@ -323,7 +323,7 @@ secondary server, without losing integrity with respect to the content that is
 distributed.
 
 This design relies on integrity and confidentiality for the request and response
-made to the origin server.  These requests MUST be made using HTTP over TLS
+made to the origin primary server.  These requests MUST be made using HTTP over TLS
 (HTTPS) [RFC2818] only.  Though there is a lesser requirement for
 confidentiality, requests made to the secondary server MUST also be secured
 using HTTPS.
@@ -340,7 +340,7 @@ confidentiality protection is needed is quite important.
 Some confidentiality protection against the secondary server is provided, but
 that is limited to content that is not otherwise accessible to that server (see
 {{confidentiality}}).  Only content that has access controls on the origin
-server that prevent access by the secondary server can retain confidentiality
+primary server that prevent access by the secondary server can retain confidentiality
 protection.
 
 Content with different access control policies MUST use different keying
@@ -355,18 +355,18 @@ thereby indicating that a direct response is necessary.
 
 ## Cross-Origin Access {#sec-cors}
 
-The content delegation creates the possibility that an origin server could adopt
+The content delegation creates the possibility that an origin primary server could adopt
 remotely hosted content.  On the web, this is normally limited by Cross-Origin
 Resource Sharing [CORS], which requires that a client first request permission
 to make a resource accessible to another origin.
 
-This document describes a method whereby content hosted on a remote server can
-be made accessible to another origin.  The content of the out-of-band resource is
-written into the content of a response from the origin.  All an origin needs to
-make this happen is knowledge of the identity of the out-of-band resource, something
-that might be difficult based on the guidance in {{urls}}, but not infeasible.
-A client requests this content using any ambient authority available to it (such
-as HTTP authentication header fields and cookies).
+This document describes a method whereby content hosted on a remote secondary
+server can be made accessible to another origin.  The content of the out-of-band
+resource is written into the content of a response from the origin.  All an
+origin needs to make this happen is knowledge of the identity of the out-of-band
+resource, something that might be difficult based on the guidance in {{urls}},
+but not infeasible. A client requests this content using any ambient authority
+available to it (such as HTTP authentication header fields and cookies).
 
 The simplest option for reducing the ability to steal content in this fashion is
 to require that the origin demonstrate that it knows the content of the
@@ -400,10 +400,10 @@ information about their contents.  When used carefully, padding as described in
 [I-D.ietf-httpbis-encryption-encoding] can obscure the length of responses and
 reduce the information that the secondary server is able to learn.
 
-A random or unpredictable mapping from the primary resource URL on the origin to
-the URL of the content is necessary, see {{urls}}.
+A random or unpredictable mapping from the primary resource URL on the primary
+server to the URL of the content is necessary, see {{urls}}.
 
-Length hiding for header fields on responses the origin server might be more
+Length hiding for header fields on responses the primary server might be more
 important when an out-of-band encoding is used, since the body of the response
 becomes less variable.
 

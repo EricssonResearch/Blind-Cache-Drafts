@@ -12,6 +12,7 @@ dependencies:
   pre:
     - pip install xml2rfc
     - gem install kramdown-rfc2629
+    - sudo apt-get update; sudo apt-get install xsltproc
 
 test:
   override:

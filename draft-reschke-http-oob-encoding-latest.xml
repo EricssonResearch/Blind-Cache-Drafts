@@ -1,0 +1,1187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc subcompact="no"?>
+<?rfc rfcedstyle="yes"?>
+<?rfc-ext allow-markup-in-artwork="yes" ?>
+<?rfc-ext html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"?>
+
+<!DOCTYPE rfc [
+  <!ENTITY mdash "&#8212;">
+  <!ENTITY Note "<x:h xmlns:x='http://purl.org/net/xml2rfc/ext'>Note:</x:h>">
+  <!ENTITY MAY "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>MAY</bcp14>">
+  <!ENTITY MUST "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>MUST</bcp14>">
+  <!ENTITY MUST-NOT "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>MUST NOT</bcp14>">
+  <!ENTITY OPTIONAL "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>OPTIONAL</bcp14>">
+  <!ENTITY RECOMMENDED "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>RECOMMENDED</bcp14>">
+  <!ENTITY REQUIRED "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>REQUIRED</bcp14>">
+  <!ENTITY SHALL "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>SHALL</bcp14>">
+  <!ENTITY SHALL-NOT "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>SHALL NOT</bcp14>">
+  <!ENTITY SHOULD "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>SHOULD</bcp14>">
+  <!ENTITY SHOULD-NOT "<bcp14 xmlns='http://purl.org/net/xml2rfc/ext'>SHOULD NOT</bcp14>">
+]>
+<rfc xmlns:x="http://purl.org/net/xml2rfc/ext" xmlns:ed="http://greenbytes.de/2002/rfcedit" ipr="trust200902" docName="draft-reschke-http-oob-encoding-latest" category="std" xml:lang="en" x:maturity-level="proposed">
+
+  <x:feedback template="mailto:ietf-http-wg@w3.org?subject={docname},%20%22{section}%22&amp;body=&lt;{ref}&gt;:"/>
+
+	<front>
+  <title>'Out-Of-Band' Content Coding for HTTP</title>
+  <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke">
+    <organization abbrev="greenbytes">greenbytes GmbH</organization>
+    <address>
+      <postal>
+        <street>Hafenweg 16</street>
+        <city>Muenster</city><region>NW</region><code>48155</code>
+        <country>Germany</country>
+      </postal>
+      <email>julian.reschke@greenbytes.de</email>
+      <uri>http://greenbytes.de/tech/webdav/</uri>
+    </address>
+  </author>
+  <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+    <organization>Ericsson</organization>
+    <address>
+        <postal>
+          <street>Torshamnsgatan 21</street>
+          <code>16483</code>
+          <city>Stochholm</city>
+          <country>Sweden</country>
+        </postal>
+        <email>salvatore.loreto@ericsson.com</email>
+    </address>
+  </author>
+
+  <date year="2016"/>
+
+  <area>Applications and Real-Time</area>
+  <keyword>HTTP</keyword>
+  <keyword>content coding</keyword>
+  <keyword>ouf-of-band</keyword>
+
+  <abstract>
+    <t>
+      This document describes an Hypertext Transfer Protocol (HTTP) content
+      coding that can be used to describe the location of a secondary resource
+      that contains the payload.
+    </t>
+  </abstract>
+
+  <note title="Editorial Note (To be removed by RFC Editor before publication)">
+    <t>
+      Distribution of this document is unlimited. Although this is not a work
+      item of the HTTPbis Working Group, comments should be sent to the 
+      Hypertext Transfer Protocol (HTTP) mailing list at <eref target="mailto:ietf-http-wg@w3.org">ietf-http-wg@w3.org</eref>,
+      which may be joined by sending a message with subject 
+      "subscribe" to <eref target="mailto:ietf-http-wg-request@w3.org?subject=subscribe">ietf-http-wg-request@w3.org</eref>.
+    </t>
+    <t>
+      Discussions of the HTTPbis Working Group are archived at
+      <eref target="http://lists.w3.org/Archives/Public/ietf-http-wg/"/>.               
+    </t>
+    <t>
+      XML versions, latest edits, and issue tracking for this document
+      are available from <eref target="https://github.com/reschke/oobencoding"/> and
+      <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
+    </t>
+    <t>
+      The changes in this draft are summarized in <xref target="changes.since.06"/>.
+    </t>
+  </note>
+
+  </front>
+
+  <middle>
+
+<section title="Introduction" anchor="introduction">
+<t>
+  This document describes an Hypertext Transfer Protocol (HTTP) content
+  coding (<xref target="RFC7231" x:rel="#content.codings"/>) that can be used
+  to describe the location of a secondary resource that contains the payload.
+</t>
+<t>
+  The primary use case for this content coding is to enable origin servers
+  to securely delegate the delivery of content to a secondary server that might
+  be "closer" to the client (with respect to network topology) and/or
+  able to cache content (<xref target="SCD"/>), leveraging content encryption
+  (<xref target="ENCRYPTENC"/>).
+</t>
+</section>
+
+<section title="Notational Conventions" anchor="notational.conventions">
+<t>
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in <xref target="RFC2119"/>.
+</t>
+<t>
+   This document reuses terminology used in the base HTTP specifications,
+   namely <xref target="RFC7230" x:fmt="of" x:rel="#architecture"/> and
+   <xref target="RFC7231" x:fmt="of" x:rel="#representations"/>.
+</t>
+</section>
+
+<section title="'Out-Of-Band' Content Coding" anchor="ouf-of-band.content.coding">
+<section title="Overview">
+<t>
+  The 'Out-Of-Band' content coding is used to direct the recipient to retrieve the
+  actual message representation (<xref target="RFC7231" x:rel="#representations"/>)
+  from a secondary resource, such as a public cache:
+</t>
+<ol>
+  <li anchor="flow.get.request">Client performs a request</li>
+  <li anchor="flow.get.response">Received response specifies the 'out-of-band' content coding; the payload
+  of the response contains additional meta data, plus the location of the secondary
+  resource</li>
+  <li anchor="flow.get.request2">Client performs GET request on secondary resource (usually again via HTTP(s))</li>
+  <li anchor="flow.get.response2">Secondary server provides payload</li>
+  <li anchor="flow.combine">Client combines above representation with additional representation metadata
+  obtained from the primary resource</li>
+</ol>
+<figure><artwork type="drawing">
+  Client                  Secondary Server           Origin Server
+
+     sends GET request with Accept-Encoding: out-of-band
+(<xref target="flow.get.request" format="counter"
+/>) |---------------------------------------------------------\
+                   status 200 and Content-Coding: out-of-band |
+(<xref target="flow.get.response" format="counter"
+/>) &lt;---------------------------------------------------------/
+
+     GET to secondary server
+(<xref target="flow.get.request2" format="counter"
+/>) |---------------------------\
+                        payload |
+(<xref target="flow.get.response2" format="counter"
+/>) &lt;---------------------------/
+
+(<xref target="flow.combine" format="counter"/>)
+   Client and combines payload received in (<xref target="flow.get.response2" format="counter"
+/>)
+   with metadata received in (<xref target="flow.get.response" format="counter"
+/>).</artwork></figure>
+</section>
+<section title="Definitions">
+<t>
+  The name of the content coding is "out-of-band". 
+</t>
+<t>
+  The payload format uses JavaScript Object Notation (JSON, <xref target="RFC7159"/>),
+  describing an object describing secondary resources; currently only defining
+  one member<!-- plus &OPTIONAL; additional
+  metadata-->:
+</t>
+<dl>
+  <dt>'sr'</dt>
+  <dd>
+    A &REQUIRED; string array containing at least one URI reference (<xref target="RFC3986" x:sec="4.1"/>)
+    of a secondary resource (URI references that are relative references are resolved against the URI
+    of the primary resource).
+  </dd>
+<!--  <dt>'fallback'</dt>
+  <dd>
+    An &OPTIONAL; string containing a URI reference of a fallback resource (see <xref target="fallback"/>).
+    This URI reference, after resolution against the URI of the primary resource, &MUST; identify
+    a resource on the same server as the primary resource.
+  </dd>-->
+  <!--<dt>'metadata'</dt>
+  <dd>
+    An &OPTIONAL; object containing additional members, representing header field values
+    which can not appear as header fields in the response message itself 
+    (header fields that occur multiple times need to be combined into a single field value as
+    per <xref target="RFC7230" x:rel="#field.order"/>; header field names are lower-cased).
+  </dd>-->
+</dl>
+<t>
+  <cref anchor="pext">This payload might be too simple in that there's no simple way to annotate the secondary resources.</cref> 
+</t>
+<t>
+  The payload format uses an array so that the origin server can specify
+  multiple secondary resources. The ordering within the array reflects the
+  origin server's preference (if any), with the most preferred secondary
+  resource location being first. Clients receiving a response containing
+  multiple URIs are free to choose which of these to use.
+</t>
+<t>
+  In some cases, the origin server might want to specify a "fallback URI"; identifying
+  a secondary resource served by the origin server itself, but otherwise
+  equivalent "regular" secondary resources. Any secondary resource hosted
+  by the origin server can be considered to be a "fallback"; origin servers
+  will usually list them last in the "sr" array so that they only will be
+  used by clients when there is no other choice. 
+</t>
+<t>
+  New specifications can define new &OPTIONAL; header fields, thus clients
+  &MUST; ignore unknown fields. Extension specifications will have to update this
+  specification. <cref>or we define a registry</cref>
+</t>
+</section>
+<section title="Processing Steps" anchor="processing">
+<t>
+  Upon receipt of an 'out-of-band' encoded response, a client first needs to
+  obtain the secondary resource's presentation. This is done using
+  an HTTP GET request (independently of the original request method).
+</t>
+<t>
+  In order to prevent any leakage of information, the GET request for
+  the secondary resource &MUST; only contain information provided by
+  the origin server or the secondary server itself, namely HTTP authentication
+  credentials (<xref target="RFC7235"/>) and cookies (<xref target="RFC6265"/>).
+</t>
+<t>
+  Furthermore, the request &MUST; include an "Origin" header field indicating
+  the origin of the original resource (<xref target="RFC6454" x:fmt="," x:sec="7"/>).
+  The secondary server &MUST; verify that the specified origin is
+  authorized to retrieve the given payload (or otherwise return an 
+  appropriate 4xx status code).
+</t>
+<t>
+  After receipt of the secondary resource's payload, the client then 
+  reconstructs the original message by:
+</t>
+<ol>
+  <li>
+    Unwrapping the encapsulated HTTP message by removing any transfer and content codings.
+  </li>
+  <li>
+    Replacing/setting any response header fields from the primary
+    response except for framing-related information such as
+    Content-Length, Transfer-Encoding and Content-Encoding.
+  </li>
+  <!--<li>
+    Replacing/setting any header fields with those present as members
+    in the "metadata" object.
+    <cref>Do we have a use case for this?</cref>
+  </li>-->
+</ol>
+<t>
+  If the client is unable to retrieve the secondary resource's representation
+  (host can't be reached, non 2xx response status code, payload failing
+  integrity check, etc.), it can choose
+  an alternate secondary resource (if specified), try the fallback URI (if
+  given), or simply retry the
+  request to the origin server without including 'out-of-band' in the
+  Accept-Encoding request header field. In the latter case, it can be useful
+  to inform the origin server about what problems were encountered
+  when trying to access the secondary resource; see <xref target="problem.reporting"/>
+  for details.
+</t>
+<t>
+  Note that although this mechanism causes the inclusion of external
+  content, it will not affect the application-level security properties
+  of the reconstructed message, such as its web origin (<xref target="RFC6454"/>).
+</t>
+<t>
+  The cacheability of the response for the secondary resource does not affect 
+  the cacheability of the reconstructed response message, which is the same as
+  for the origin server's response.
+</t>
+<t>
+  Use of the 'out-of-band' coding is similar to HTTP redirects (<xref target="RFC7231" x:fmt="," x:rel="#status.3xx"/>)
+  in that it can lead to cycles. Unless with HTTP redirects, the client however
+  is in full control: it does not need to advertise support for the 'out-of-band'
+  coding in requests for secondary resources. Alternatively, it can protect itself
+  just like for HTTP redirects -- by limiting the number of indirections it supports.
+</t>
+<t>
+  Note that because the server's response depends on the request's Accept-Encoding
+  header field, the response usually will need to be declared to vary on that. See
+  <xref target="RFC7231" x:fmt="of" x:rel="#header.vary"/> and
+  <xref target="RFC7232" x:fmt="of" x:rel="#header.etag"/> for details.
+</t>
+</section>
+
+<section title="Problem Reporting" anchor="problem.reporting">
+<t>
+  When the client fails to obtain the secondary resource, it can be useful
+  to inform the origin server about the condition. This can be accomplished
+  by adding a "Link" header field (<xref target="RFC5988"/>) to a subsequent request to the origin server,
+  detailing the URI of the secondary resource and the failure reason.
+</t>
+<t>
+  The following link extension relations are defined:
+</t>
+<t>
+  <cref anchor="purl">purl.org seems to have turned read-only; we may need a different way to mint identifiers</cref>
+</t>
+<t>
+  <cref anchor="erwip">This is a rough proposal for an error reporting mechanism. Is it good enough? Is it needed at all?
+  Note that Alt-Svc doesn't have anything like this.</cref>
+</t>
+<section title="Server Not Reachable" anchor="rel-not-reachable">
+<t>
+  Used in case the server was not reachable.
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/not-reachable</artwork>
+</figure>
+</section>
+
+<section title="Resource Not Found" anchor="rel-resource-not-found">
+<t>
+  Used in case the server responded, but the object could not be obtained.
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/resource-not-found</artwork>
+</figure>
+</section>
+
+<section title="Payload Unusable" anchor="rel-payload-unusable">
+<t>
+  Used in case the payload could be obtained, but wasn't usable
+  (for instance, because integrity checks failed).
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/payload-unusable</artwork>
+</figure>
+</section>
+
+<section title="TLS Handshake Failure" anchor="rel-tls-handshake-failure">
+<t>
+  Used in case of a TLS handshare failure (<xref target="RFC5246"/>).
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/tls-handshake-failure</artwork>
+</figure>
+</section>
+</section>
+
+<section title="Examples">
+<section title="Basic Example" anchor="basic.example">
+<figure>
+<preamble>Client request of primary resource at https://www.example.com/test:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test HTTP/1.1
+Host: www.example.com
+Accept-Encoding: gzip, out-of-band
+
+</artwork></figure>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Type: text/plain
+Cache-Control: max-age=10, public
+Content-Encoding: out-of-band
+Content-Length: <x:length-of target="exbody"/>
+Vary: Accept-Encoding
+
+<x:span anchor="exbody" x:lang="">{
+  "sr": [
+    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00",
+    "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"
+  ]
+}
+</x:span></artwork>
+<postamble>
+  (note that the Content-Type header field describes the media type of the
+  secondary's resource representation, and the origin server supplied
+  a fallback URI)
+</postamble>
+</figure>
+<figure>
+<preamble>Client request for secondary resource:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /bae27c36-fa6a-11e4-ae5d-00059a3c7a00 HTTP/1.1
+Host: example.net
+Origin: https://www.example.com
+
+</artwork></figure>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:10 GMT
+Cache-Control: private
+Content-Length: <x:length-of target="exbody2"/>
+
+<x:span anchor="exbody2">Hello, world.
+</x:span></artwork>
+<postamble>(Note no Content-Type header field is present here because the 
+secondary server truly does not know the media type of the payload)</postamble>
+</figure>
+<figure>
+<preamble>Final message after recombining header fields:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Length: <x:length-of target="exbody5"/>
+Cache-Control: max-age=10, public
+Content-Type: text/plain
+
+<x:span anchor="exbody5">Hello, world.
+</x:span></artwork>
+</figure>
+</section>
+
+<section title="Example for an attempt to use 'out-of-band' cross-origin">
+<t>
+  <xref target="processing"/> requires the client to include an "Origin"
+  header field in the request to a secondary server. The example below
+  shows how the server for the secondary resource would respond to a request
+  which contains an "Origin" header field identifying an unauthorized origin.
+</t>
+<t>
+  Continuing with the example from <xref target="basic.example"/>,
+  and a secondary server that is configured to allow only access for requests 
+  initiated by "https://www.example.org":
+</t>
+<figure>
+<preamble>Client request for secondary resource:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /bae27c36-fa6a-11e4-ae5d-00059a3c7a00 HTTP/1.1
+Host: example.net
+Origin: https://www.example.com
+
+</artwork></figure>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 403 Forbidden
+Date: Thu, 14 May 2015 18:52:10 GMT
+
+</artwork>
+<postamble>Note that a request missing the "Origin" header field would be
+treated the same way.
+</postamble>
+</figure>
+<t>
+  <cref>Any reason why to *mandate* a specific 4xx code?</cref>
+</t>
+</section>
+
+<section title="Example involving an encrypted resource">
+<t>
+  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="5.4"/>,
+  a primary resource could use the 'out-of-band' coding to specify just
+  the location of the secondary resource plus the contents of the 
+  "Crypto-Key" header field needed to decrypt the payload: 
+</t>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Encoding: aesgcm, out-of-band
+Content-Type: text/plain
+Encryption: keyid="a1"; salt="vr0o6Uq3w_KDWeatc27mUg"
+Crypto-Key: keyid="a1"; aesgcm="csPJEXBYA5U-Tal9EdJi-w"
+Content-Length: <x:length-of target="exbody4"/>
+Vary: Accept-Encoding
+
+<x:span anchor="exbody4" x:lang="">{
+  "sr": [
+    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"
+  ]
+}
+</x:span></artwork>
+<postamble>
+  (note that the Content-Type header field describes the media type of the
+  secondary's resource representation)
+</postamble>
+</figure>
+<figure>
+<preamble>Response for secondary resource:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:10 GMT
+Content-Length: ...
+
+VDeU0XxaJkOJDAxPl7h9JD5V8N43RorP7PfpPdZZQuwF</artwork>
+<postamble>(payload body shown in base64 here)</postamble>
+</figure>
+<figure>
+<preamble>Final message undoing all content codings:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Length: <x:length-of target="exbody8"/>
+Content-Type: text/plain
+
+<x:span anchor="exbody8">I am the walrus</x:span></artwork>
+</figure>
+<x:note>
+<t>
+  <x:h>Note:</x:h> in this case, the ability to undo the 'aesgcm' is needed
+  to process the response. If 'aesgcm' wasn't listed as acceptable content coding
+  in the request, the origin server wouldn't be able to use the 'out-of-band'
+  mechanism.
+</t>
+</x:note>
+</section>
+
+<section title="Example For Problem Reporting">
+<t>
+  Client requests primary resource as in <xref target="basic.example"/>, but the
+  attempt to access the secondary resource fails.
+</t>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 404 Not Found
+Date: Thu, 08 September 2015 16:49:00 GMT
+Content-Type: text/plain
+Content-Length: <x:length-of target="exbody404"/>
+
+<x:span anchor="exbody404">Resource Not Found
+</x:span></artwork>
+</figure>
+<figure>
+<preamble>Client retries with the origin server and includes Link
+header field reporting the problem:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test HTTP/1.1
+Host: www.example.com
+Accept-Encoding: gzip, out-of-band
+Link: &lt;http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
+      rel="http://purl.org/NET/linkrel/resource-not-found"
+
+</artwork></figure>
+</section>
+
+<section title="Relation to Content Negotiation" anchor="relation.to.content.negotiation">
+<t>
+  Use of the 'out-of-band' encoding is a case of "proactive content negotiation", 
+  as defined in <xref target="RFC7231" x:fmt="of" x:rel="#content.negotiation"/>.
+</t>
+<t>
+  This however does not rule out combining it with other content codings. As an example, the
+  possible iteractions with the 'gzip' content coding (<xref target="RFC7230" x:fmt="," x:rel="#gzip.coding"/>)
+  are described below:
+</t>
+<t>
+  <x:h>Case 1: Primary resource does not support 'gzip' encoding</x:h>
+</t>
+<t>
+  In this case, the response for the primary resource will never include
+  'gzip' in the Content-Encoding header field. The secondary resource
+  however might support it, in which case the client could negotiate
+  compression by including "Accept-Encoding: gzip" in the request to the
+  secondary resource.
+</t>
+<t>
+  <x:h>Case 2: Primary resource does support 'gzip' encoding</x:h>
+</t>
+<t>
+  Here, the origin server would actually use two different secondary resources,
+  one of them being gzip-compressed. For instance &mdash; going back to the first
+  example in <xref target="basic.example"/> &mdash; it might reply with:
+</t>
+<figure>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Type: text/plain
+Cache-Control: max-age=10, public
+Content-Encoding: gzip, out-of-band
+Content-Length: <x:length-of target="exbodygz"/>
+Vary: Accept-Encoding
+
+<x:span anchor="exbodygz" x:lang="">{
+  "sr": [
+    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a01",
+    "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a01"
+  ]
+}
+</x:span></artwork>
+</figure>
+<t>
+  which would mean that the payload for the secondary resource already is
+  gzip-compressed.
+</t>
+</section>
+</section>
+</section>
+
+
+<section title="Content Codings and Range Requests">
+<t>
+  The combination of content codings (<xref target="RFC7231" x:fmt="," x:rel="#data.encoding"/> with
+  range requests (<xref target="RFC7233"/>) can lead to surprising results, as
+  applying the range request happens after applying content codings.
+</t>
+<figure>
+<preamble>
+  Thus, for a request for the bytes starting at position 100000 of a video:
+</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test.mp4 HTTP/1.1
+Host: www.example.com
+Range: bytes=100000-
+Accept-Encoding: identity
+
+</artwork></figure>
+<figure>
+<preamble>
+  ...a successful response would use status code 206 (Partial Content) and
+  have a payload containing the octets starting at position 100000.
+</preamble>
+<artwork type="message/http; msgtype=&#34;response&#34;" x:indent-with="  ">
+HTTP/1.1 206 Partial Content
+Date: Thu, 08 September 2015 16:49:00 GMT
+Content-Type: video/mp4
+Content-Length: 134567
+Content-Range: bytes 100000-234566/234567
+
+<em>(binary data)</em></artwork>
+</figure>
+<figure>
+<preamble>
+  However, if the request would have allowed the use of 'out-of-band' coding:
+</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test.mp4 HTTP/1.1
+Host: www.example.com
+Range: bytes=100000-
+Accept-Encoding: out-of-band
+
+</artwork>
+<postamble>...a server might return an empty payload (if the out-of-band
+coded response body would be shorter than 100000 bytes, as would be usually the case).</postamble>
+</figure>
+<t>
+  Thus, in order to avoid unnecessary network traffic, servers &SHOULD-NOT;
+  apply range request processing to responses using ouf-of-band content coding
+  (or, in other words: ignore "Range" request header fields in this case).
+</t>
+</section>
+
+<section title="Feature Discovery" anchor="feature.discovery">
+<t>
+  New content codings can be deployed easily, as the client can use
+  the "Accept-Encoding" header field (<xref target="RFC7231" x:rel="#header.accept-encoding"/>)
+  to signal which content codings are supported.
+</t>
+</section>
+
+<section title="Security Considerations" anchor="security.considerations">
+<section title="Content Modifications">
+<t>
+  This specification does not define means to verify that the payload
+  obtained from the secondary resource really is what the origin server
+  expects it to be. Content signatures can address this concern
+  (see <xref target="CONTENTSIG"/> and <xref target="MICE"/>).
+</t>
+</section>
+<section title="Content Stealing">
+<t>
+  The 'out-of-band' content coding could be used to circumvent the same-origin
+  policy (<xref target="RFC6454" x:fmt="," x:sec="3"/>) of user agents: an
+  attacking site which knows the URI of a secondary resource would use the
+  'out-of-band' coding to trick the user agent to read the contents of the secondary resource,
+  which then, due to the security properties of this coding, would be
+  handled as if it originated from the origin's resource.
+</t>
+<t>
+  This scenario is addressed by the client requirement to include
+  the "Origin" request header field and the server requirement to verify
+  that the request was initiated by an authorized origin.
+</t>
+<aside>
+  <t>
+    <x:h>Note:</x:h> similarities with the "Cross-Origin Resource Sharing"
+    protocol (<xref target="CORS"/>) are intentional.
+  </t>
+</aside>
+<t>
+  Requiring the secondary resource's payload to be encrypted (<xref target="ENCRYPTENC"/>)
+  is an additional mitigation.
+</t>
+</section>
+<section title="Use in Requests">
+<t>
+  In general, content codings can be used in both requests and responses. This particular
+  content coding has been designed for responses. When supported in requests, it
+  creates a new attack vector where the receiving server can be tricked into
+  including content that the client might not have access to otherwise
+  (such as HTTP resources behind a firewall).
+</t>
+</section>
+</section>
+
+<section title="IANA Considerations" anchor="iana.considerations">
+<t>
+  The IANA "HTTP Content Coding Registry", located at <eref target="http://www.iana.org/assignments/http-parameters"/>,
+  needs to be updated with the registration below:
+</t>
+<dl>
+  <dt>Name:</dt>
+  <dd>
+    out-of-band
+  </dd>
+  <dt>Description:</dt>
+  <dd>
+    Payload needs to be retrieved from a secondary resource
+  </dd>
+  <dt>Reference:</dt>
+  <dd>
+    <xref target="ouf-of-band.content.coding"/> of this document
+  </dd>
+</dl>
+</section>
+
+  </middle>
+  <back>
+
+<references title="Normative References">
+
+<reference anchor="RFC2119">
+  <front>
+    <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+    <author initials="S." surname="Bradner" fullname="Scott Bradner"/>
+    <date month="March" year="1997"/>
+  </front>
+  <seriesInfo name="BCP" value="14"/>
+  <seriesInfo name="RFC" value="2119"/>
+</reference>
+
+<reference anchor="RFC3986">
+ <front>
+  <title abbrev='URI Generic Syntax'>Uniform Resource Identifier (URI): Generic Syntax</title>
+  <author initials='T.' surname='Berners-Lee' fullname='Tim Berners-Lee'/>
+  <author initials='R.' surname='Fielding' fullname='Roy T. Fielding'/>
+  <author initials='L.' surname='Masinter' fullname='Larry Masinter'/>
+  <date month='January' year='2005'></date>
+ </front>
+ <seriesInfo name="STD" value="66"/>
+ <seriesInfo name="RFC" value="3986"/>
+</reference>
+
+<reference anchor='RFC5988'>
+  <front>
+    <title>Web Linking</title>
+    <author initials='M.' surname='Nottingham' fullname='M. Nottingham'/>
+    <date year='2010' month='October' />
+  </front>
+  <seriesInfo name='RFC' value='5988'/>
+</reference>
+
+<reference anchor="RFC6265">
+  <front>
+    <title>HTTP State Management Mechanism</title>
+    <author initials="A." surname="Barth" fullname="Adam Barth"/>
+    <date year="2011" month="April" />
+  </front>
+  <seriesInfo name="RFC" value="6265"/>
+</reference>
+
+<reference anchor='RFC7159'>
+  <front>
+    <title>The JavaScript Object Notation (JSON) Data Interchange Format</title>
+    <author initials='T.' surname='Bray' fullname='Tim Bray'/>
+    <date year='2014' month='March' />
+  </front>
+  <seriesInfo name='RFC' value='7159' />
+</reference>
+
+<reference anchor="RFC7230">
+  <front>
+    <title>Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing</title>
+    <author initials="R." surname="Fielding" fullname="Roy T. Fielding" role="editor"/>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke" role="editor"/>
+    <date month="June" year="2014"/>
+  </front>
+  <seriesInfo name="RFC" value="7230"/>
+  <x:source href="refs/rfc7230.xml" basename="rfc7230"/>
+</reference>
+
+<reference anchor="RFC7231">
+  <front>
+    <title>Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</title>
+    <author initials="R." surname="Fielding" fullname="Roy T. Fielding" role="editor"/>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke" role="editor"/>
+    <date month="June" year="2014"/>
+  </front>
+  <seriesInfo name="RFC" value="7231"/>
+  <x:source href="refs/rfc7231.xml" basename="rfc7231"/>
+</reference>
+
+<reference anchor="RFC7235">
+  <front>
+    <title>Hypertext Transfer Protocol (HTTP/1.1): Authentication</title>
+    <author initials="R." surname="Fielding" fullname="Roy T. Fielding" role="editor"/>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke" role="editor"/>
+    <date month="June" year="2014"/>
+  </front>
+  <seriesInfo name="RFC" value="7235"/>
+  <x:source href="refs/rfc7235.xml" basename="rfc7235"/>
+</reference>
+
+</references>
+
+<references title="Informative References">
+
+<reference anchor='RFC2017'>
+  <front>
+    <title abbrev='URL Access-Type'>Definition of the URL MIME External-Body Access-Type</title>
+    <author initials='N.' surname='Freed' fullname='Ned Freed'/>
+    <author initials='K.' surname='Moore' fullname='Keith Moore'/>
+    <date year='1996' month='October' />
+  </front>
+  <seriesInfo name='RFC' value='2017' />
+</reference>
+
+<reference anchor='RFC4483'>
+  <front>
+    <title>A Mechanism for Content Indirection in Session Initiation Protocol (SIP) Messages</title>
+    <author initials='E.' surname='Burger' fullname='E. Burger'/>
+    <date year='2006' month='May' />
+  </front>
+  <seriesInfo name='RFC' value='4483' />
+</reference>
+
+<reference anchor="RFC5246">
+  <front>
+    <title>The Transport Layer Security (TLS) Protocol Version 1.2</title>
+    <author initials="T." surname="Dierks" fullname="T. Dierks"/>
+    <author initials="E." surname="Rescorla" fullname="E. Rescorla"/>
+    <date year="2008" month="August"/>
+  </front>
+  <seriesInfo name="RFC" value="5246"/>
+</reference>
+
+<reference anchor="RFC6454">
+  <front>
+    <title>The Web Origin Concept</title>
+    <author initials="A." surname="Barth" fullname="A. Barth"/>
+    <date year="2011" month="December"/>
+  </front>
+  <seriesInfo name="RFC" value="6454"/>
+</reference>
+
+<reference anchor="RFC7232">
+  <front>
+    <title>Hypertext Transfer Protocol (HTTP/1.1): Conditional Requests</title>
+    <author initials="R." surname="Fielding" fullname="Roy T. Fielding" role="editor"/>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke" role="editor"/>
+    <date month="June" year="2014"/>
+  </front>
+  <seriesInfo name="RFC" value="7232"/>
+  <x:source href="refs/rfc7232.xml" basename="rfc7232"/>
+</reference>
+
+<reference anchor="RFC7233">
+  <front>
+    <title>Hypertext Transfer Protocol (HTTP/1.1): Range Requests</title>
+    <author initials="R." surname="Fielding" fullname="Roy T. Fielding" role="editor"/>
+    <author initials="Y." surname="Lafon" fullname="Yves Lafon" role="editor"/>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke" role="editor"/>
+    <date month="June" year="2014"/>
+  </front>
+  <seriesInfo name="RFC" value="7233"/>
+  <x:source href="refs/rfc7233.xml" basename="rfc7233"/>
+</reference>
+
+<reference anchor='ENCRYPTENC'>
+  <front>
+    <title>Encrypted Content-Encoding for HTTP</title>
+    <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
+    <date month="March" year="2016"/>
+  </front>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-01"/>
+</reference>
+
+<reference anchor='CONTENTSIG'>
+  <front>
+    <title>Content-Signature Header Field for HTTP</title>
+    <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
+    <date month="July" year="2015"/>
+  </front>
+  <seriesInfo name="Internet-Draft" value="draft-thomson-http-content-signature-00"/>
+</reference>
+
+<reference anchor='MICE'>
+  <front>
+    <title>Merkle Integrity Content Encoding</title>
+    <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
+    <date month="January" year="2016"/>
+  </front>
+  <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-00"/>
+</reference>
+
+<reference anchor='SCD'>
+  <front>
+    <title>An Architecture for Secure Content Delegation using HTTP</title>
+    <author initials='M.' surname='Thomson' fullname='Martin Thomson'/>
+    <author initials='G.' surname='Eriksson' fullname='Goran Eriksson'/>
+    <author initials='C.' surname='Holmberg' fullname='Christer Holmberg'/>
+    <date month='March' day='21' year='2016' />  
+  </front>
+  <seriesInfo name='Internet-Draft' value='draft-thomson-http-scd-00' />
+</reference>
+
+<reference anchor='CORS'
+           target='http://www.w3.org/TR/2014/REC-cors-20140116/'>
+  <front>
+    <title>Cross-Origin Resource Sharing</title>
+    <author fullname='Anne van Kesteren' surname='van Kesteren' initials='A.'/>
+    <date year='2014' month='January' day='16'/>
+  </front>
+  <seriesInfo name='W3C Recommendation' value='REC-cors-20140116'/>
+  <annotation>
+    Latest version available at
+    <eref target='http://www.w3.org/TR/cors/'/>.
+  </annotation>
+</reference>
+
+</references>
+
+<section title="Alternatives, or: why not a new Status Code?" anchor="alternatives">
+<t>
+  A plausible alternative approach would be to implement this functionality one level
+  up, using a new redirect status code (<xref target="RFC7231" x:rel="#status.3xx"/>). However, 
+  this would have several drawbacks:
+</t>
+<ul>
+  <li>Servers will need to know whether a client understands the new status code;
+  thus some additional signal to opt into this protocol would always be needed.</li>
+  <li>In redirect messages, representation metadata (<xref target="RFC7231" x:rel="#representation.metadata"/>),
+  namely "Content-Type", applies to the response message, not the redirected-to
+  resource.</li>
+  <li>The origin-preserving nature of using a content coding would be lost.</li>
+</ul>
+<t>
+  Another alternative would be to implement the indirection on the level
+  of the media type using something similar to the type "message/external-body",
+  defined in <xref target="RFC2017"/> and refined for use in the 
+  Session Initiation Protocol (SIP) in <xref target="RFC4483"/>. This approach
+  though would share most of the drawbacks of the status code approach mentioned 
+  above.
+</t>
+</section>
+
+<section title="Open Issues">
+<section title="Accessing the Secondary Resource Too Early" anchor="fallback">
+<t>
+  One use-case for this protocol is to enable a system of "blind caches",
+  which would serve the secondary resources. These caches might only be populated
+  on demand, thus it could happen that whatever mechanism is used to populate
+  the cache hasn't finished when the client hits it (maybe due to race
+  conditions, or because the cache is behind a middlebox which doesn't allow
+  the origin server to push content to it).
+</t>
+<t>
+  In this particular case, it can be useful if the client was able to 
+  "piggyback" the URI of the fallback for the primary resource, giving the secondary server
+  a means by which it could obtain the payload itself. This information could
+  be provided in yet another Link header field:
+</t>
+<figure>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /bae27c36-fa6a-11e4-ae5d-00059a3c7a00 HTTP/1.1
+Host: example.net
+Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
+      rel="http://purl.org/NET/linkrel/fallback-resource"
+
+</artwork>
+<postamble>
+(continuing the example from <xref target="basic.example"/>)
+</postamble>
+</figure>
+</section>
+
+<section title="Resource maps" anchor="resource.maps">
+<t>
+  When 'out-of-band' coding is used as part of a caching solution, the additional
+  round trips to the origin server can be a significant performance problem;
+  in particular, when many small resources need to be loaded (such as 
+  scripts, images, or video fragments). In cases like these, it could be 
+  useful for the origin server to provide a "resource map", allowing
+  to skip the round trips to the origin server for these mapped resources.
+  Plausible ways to transmit the resource map could be: 
+</t>
+<ul>
+  <li>
+    as extension in the 'out-of-band' coding JSON payload, or
+  </li>
+  <li>
+    as separate resource identified by a "Link" response header field.
+  </li>
+</ul>
+<t>
+  This specification does not define a format, nor a mechanism to transport
+  the map, but it's a given that some specification using 'out-of-band'
+  coding will do.
+</t>
+</section>
+
+<section title="Fragmenting" anchor="fragmenting">
+<t>
+  It might be interesting to divide the original resource's payload into fragments,
+  each of which being mapped to a distinct secondary resource. This would
+  allow to not store the full payload of a resource in a single cache, thus
+</t>
+<ul>
+  <li>distribute load,</li>
+  <li>caching different parts of the resource with different characteristics (such as only distribute the first minutes of a long video), or</li>
+  <li>fetching specific parts of a resource (similar to byte range requests), or</li>
+  <li>hiding information from the secondary server.</li>
+</ul>
+<t>
+  Another benefit might be that it would allow the origin server to only serve the first
+  part of a resource itself (reducing time to play of a media resource), while
+  delegating the remainder to a cache (however, this might require further adjustments
+  of the 'out-of-band' payload format).
+</t>
+</section>
+
+<section title="Relation to Content Encryption">
+<t>
+  Right now this specification is orthogonal to <xref target="ENCRYPTENC"/>/<xref target="MICE"/>; that is, it could be
+  used for public content such as software downloads. However, the lack of mandatory encryption
+  affects the security considerations (which currently try to rule attack vectors
+  caused by ambient authority (<xref target="RFC6265" x:fmt="," x:sec="8.2"/>).
+  We need to decide whether we need this level of independence.
+</t>
+</section>
+
+<section title="Reporting">
+<t>
+  This specification already defines hooks through which a client can report
+  failures when accessing secondary resources (see <xref target="problem.reporting"/>).
+</t>
+<t>
+  However, it would be useful if there were also ways to report on statistics such as:
+</t>
+<ul>
+  <li>Success (Cache Hit) rates, and</li>
+  <li>Bandwidth to secondary servers.</li>
+</ul>
+<t>
+  This could be implemented using a new service endpoint and a (JSON?) payload
+  format.
+</t>
+<t>
+  Similarly, a reporting facility for use by the secondary servers
+  could be useful.
+</t>
+</section>
+
+</section>
+
+<section title="Change Log (to be removed by RFC Editor before publication)" anchor="change.log">
+<section title="Changes since draft-reschke-http-oob-encoding-00" anchor="changes.since.00">
+<t>
+  Mention media type approach.
+</t>
+<t>
+  Explain that clients can always fall back not to use oob when the secondary
+  resource isn't available.
+</t>
+<t>
+  Add Vary response header field to examples and mention that it'll
+  usually be needed
+  (<eref target="https://github.com/reschke/oobencoding/issues/6"/>).
+</t>
+<t>
+  Experimentally add problem reporting using piggy-backed Link header fields
+  (<eref target="https://github.com/reschke/oobencoding/issues/7"/>).
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-01" anchor="changes.since.01">
+<t>
+  Updated ENCRYPTENC reference.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-02" anchor="changes.since.02">
+<t>
+  Add MICE reference.
+</t>
+<t>
+  Remove the ability of the secondary resource to contain anything but the
+  payload (<eref target="https://github.com/reschke/oobencoding/issues/11"/>).
+</t>
+<t>
+  Changed JSON payload to be an object containing an array of URIs plus
+  additional members. Specify "fallback" as one of these additional members,
+  and update <xref target="fallback"/> accordingly).
+</t>
+<t>
+  Discuss extensibility a bit.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-03" anchor="changes.since.03">
+<t>
+  Mention "Content Stealing" thread.
+</t>
+<t>
+  Mention padding.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-04" anchor="changes.since.04">
+<t>
+  Reduce information leakage by disallowing ambient authority information
+  being sent to the secondary resource. Require "Origin" to be included
+  in request to secondary resource, and require secondary server to check it.
+</t>
+<t>
+  Mention "Origin" + server check on secondary resource as defense to content stealing.
+</t>
+<t>
+  Update ENCRYPTENC reference, add SCD reference.
+</t>
+<t>
+  Mention fragmentation feature.
+</t>
+<t>
+  Discuss relation with range requests.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-05" anchor="changes.since.05">
+<t>
+  Remove redundant Cache-Control: private from one example response (the response payload is encrypted anyway).
+</t>
+<t>
+  Mention looping.
+</t>
+<t>
+  Remove 'metadata' payload element.
+</t>
+<t>
+  Align with changes in ENCRYPTENC spec.
+</t>
+<t>
+  Fix incorrect statement about what kind of cookies/credentials can be used in the request to the secondary resource.
+</t>
+<t>
+  Rename "URIs" to "sr" ("secondary resources") and treat the fallback URI like a regular secondary resource.
+</t>
+<t>
+  Mention reporting protocol ideas.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-06" anchor="changes.since.06">
+<t>
+  Changed the link relation name to the fallback resource from "primary" to "fallback".
+  Added link relation for reporting TLS handshake failures.
+</t>
+<t>
+  Added an example about the interaction with 'gzip' coding.
+</t>
+</section>
+</section>
+
+
+<section title="Acknowledgements" numbered="false">
+<t>
+  Thanks to Christer Holmberg, Daniel Lindstrom, Erik Nygren, Goran Eriksson, John Mattsson, Kevin Smith, Magnus Westerlund, Mark Nottingham, Martin Thomson,
+  and Roland Zink for feedback on this document.
+</t>
+</section>
+
+  </back>
+
+</rfc>

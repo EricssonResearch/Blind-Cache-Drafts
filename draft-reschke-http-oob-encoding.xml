@@ -602,6 +602,13 @@ Vary: Accept-Encoding
   which would mean that the payload for the secondary resource already is
   gzip-compressed.
 </t>
+<aside>
+  <t>
+    <x:h>Note:</x:h> The origin server could also apply gzip
+    compression to the out-of-band payload, in which case the Content-Encoding
+    field value would become: "gzip, out-of-band, gzip".
+  </t>
+</aside>
 </section>
 </section>
 </section>

@@ -914,9 +914,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <front>
     <title>Merkle Integrity Content Encoding</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="January" year="2016"/>
+    <date month="June" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-00"/>
+  <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-01"/>
 </reference>
 
 <reference anchor='SCD'>
@@ -1177,6 +1177,9 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 <t>
   Added an example about the interaction with 'gzip' coding.
+</t>
+<t>
+  Update MICE reference.
 </t>
 </section>
 </section>

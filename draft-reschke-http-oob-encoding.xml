@@ -925,9 +925,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
     <author initials='M.' surname='Thomson' fullname='Martin Thomson'/>
     <author initials='G.' surname='Eriksson' fullname='Goran Eriksson'/>
     <author initials='C.' surname='Holmberg' fullname='Christer Holmberg'/>
-    <date month='March' day='21' year='2016' />  
+    <date month='June' year='2016' />  
   </front>
-  <seriesInfo name='Internet-Draft' value='draft-thomson-http-scd-00' />
+  <seriesInfo name='Internet-Draft' value='draft-thomson-http-scd-01' />
 </reference>
 
 <reference anchor='CORS'
@@ -1179,7 +1179,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
   Added an example about the interaction with 'gzip' coding.
 </t>
 <t>
-  Update ENCRYPTENC and MICE references.
+  Update ENCRYPTENC, MICE, and SCD references.
 </t>
 </section>
 </section>

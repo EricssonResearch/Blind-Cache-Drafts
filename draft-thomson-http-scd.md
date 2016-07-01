@@ -307,8 +307,8 @@ This request would omit any indication of support for out-of-band content coding
 from the Accept-Encoding header field, plus a link relation indicating the
 secondary resource and the reason for failure.
 
-A primary server can use this information to do informed choices about whether to use
-content delegation.
+A primary server can use this information to make informed choices about whether
+to use content delegation.
 
 Non-idempotent requests cannot be safely retried.  Therefore, clients cannot
 retry a a request and provide information about errors to the primary server.
@@ -323,7 +323,7 @@ secondary server, without losing integrity with respect to the content that is
 distributed.
 
 This design relies on integrity and confidentiality for the request and response
-made to the origin primary server.  These requests MUST be made using HTTP over TLS
+made to the primary server.  These requests MUST be made using HTTP over TLS
 (HTTPS) [RFC2818] only.  Though there is a lesser requirement for
 confidentiality, requests made to the secondary server MUST also be secured
 using HTTPS.
@@ -339,8 +339,8 @@ confidentiality protection is needed is quite important.
 
 Some confidentiality protection against the secondary server is provided, but
 that is limited to content that is not otherwise accessible to that server (see
-{{confidentiality}}).  Only content that has access controls on the origin
-primary server that prevent access by the secondary server can retain confidentiality
+{{confidentiality}}).  Only content that has access controls on the primary
+server that prevent access by the secondary server can retain confidentiality
 protection.
 
 Content with different access control policies MUST use different keying
@@ -355,7 +355,7 @@ thereby indicating that a direct response is necessary.
 
 ## Cross-Origin Access {#sec-cors}
 
-The content delegation creates the possibility that an origin primary server could adopt
+The content delegation creates the possibility that a primary server could adopt
 remotely hosted content.  On the web, this is normally limited by Cross-Origin
 Resource Sharing [CORS], which requires that a client first request permission
 to make a resource accessible to another origin.
@@ -403,9 +403,9 @@ reduce the information that the secondary server is able to learn.
 A random or unpredictable mapping from the primary resource URL on the primary
 server to the URL of the content is necessary, see {{urls}}.
 
-Length hiding for header fields on responses the primary server might be more
-important when an out-of-band encoding is used, since the body of the response
-becomes less variable.
+Length hiding for header fields on responses from the primary server might be
+more important when an out-of-band encoding is used, since the body of the
+response becomes less variable.
 
 Making requests for content to multiple different servers can improve the amount
 of content length information available to network observers.  HTTP/2

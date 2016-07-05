@@ -89,7 +89,7 @@
       <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
     </t>
     <t>
-      The changes in this draft are summarized in <xref target="changes.since.06"/>.
+      The changes in this draft are summarized in <xref target="changes.since.07"/>.
     </t>
   </note>
 
@@ -1180,6 +1180,11 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 <t>
   Update ENCRYPTENC, MICE, and SCD references.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-07" anchor="changes.since.07">
+<t>
+  None yet.
 </t>
 </section>
 </section>

@@ -5,8 +5,7 @@ date: 2016
 category: info
 ipr: trust200902
 
-stand_alone: yes
-pi: [toc, sortrefs, symrefs, docmapping]
+pi: [toc, sortrefs]
 
 author:
  -
@@ -34,10 +33,8 @@ normative:
   RFC2119:
   I-D.reschke-http-oob-encoding:
   I-D.thomson-http-mice:
-  RFC5246:
   RFC7230:
   RFC7231:
-  RFC7540:
   RFC5988:
   HTTP-SCD:
     title: An Architecture for Secure Content Delegation using HTTP
@@ -54,12 +51,7 @@ normative:
       - ins: G. Eriksson
     target:  draft-thomson-http-bc.html
 informative:
-  RFC2104:
-  RFC2818:
-  RFC6454:
   RFC6570:
-  I-D.ietf-httpbis-client-hints:
-  I-D.thomson-http-content-signature:
   I-D.ietf-httpbis-encryption-encoding:
   Fetch:
     title: Fetch
@@ -71,16 +63,6 @@ informative:
       - ins: J. Song
       - ins: J. Archibald
     target: https://www.w3.org/TR/service-workers/
-  CORS:
-    title: Cross-Origin Resource Sharing
-    author:
-      - ins: A. van Kesteren
-    target: https://www.w3.org/TR/cors/    
-  CSP:
-    title: Content Security Policy Level 3
-    author:
-      - ins: M. West
-    target: https://w3c.github.io/webappsec-csp/
   DASH:
     title: "Information technology -- Dynamic adaptive streaming over HTTP (DASH) -- Part 1: Media presentation description and segment formats"
     author:
@@ -123,7 +105,8 @@ The bundle of OOB mapping information from a primary server to a client for a se
  specifications, namely Section 2 of [RFC7230] and Section 3 of
  [RFC7231].
 
-# The resource map
+# The Resource Map
+
 ## Overview
 
 The primary server creates a resource map containing information about how a set of resources on the origin server maps to a set of resource locations on one or multiple secondary servers.
@@ -132,7 +115,7 @@ Henceforth, the information in a resource map is described as attributes.
 
 A resource map will include the attributes outlined in '[I-D.reschke-http-oob-encoding]' as well as additional attributes related to that it concerns multiple resources.
 
-## Basic attributes
+## Basic Attributes
 
 '[I-D.reschke-http-oob-encoding]' describes a set of attributes for a OOB response.  For convenience, an example is given below.
 
@@ -195,14 +178,13 @@ mappedURI = "https://cache.example.com/{origin}/images/{hmac-of-postfix}
 "/images/", where the mapped URI would be constructed by concatenating
 "https://cache.example.com/", the origin's host name, "/images/", and a base64- or hex-encoded opaque part, computed based on the remainder of the origin URI's path.
 
-## Additional Resource Map attributes
-{additional-attributes}
+## Additional Resource Map Attributes {#additional-attributes}
 
 In addition to the attributes discussed above, an origin server could add other attributes in the resource map extending those in [I-D.reschke-http-oob-encoding].
 
 Max-Age: When expired, secondary server should validate resource status with origin server.
 
-# Resource map delivery
+# Resource Map Delivery
 
 There are several ways for how to deliver the resource map from a primary server to a client. Which is most appropriate vary with client type.
 
@@ -213,19 +195,19 @@ A resource map might be large. For this reason a client MAY use compression tech
 --- Editors note:
 Resource constrained devices could possibly benefit from a CBOR format.
 
-## Basic method
+## Basic Method
 
 '[I-D.reschke-http-oob-encoding]' uses a method where the OOB information is returned in the payload of the response from the origin server to a client request for a resource.
 
 This method could also be used to include a resource map for multiple resources inside a single OOB response.
 
-## Using HTTP/2 Push for OOB responses {#http2-push}
+## Using HTTP/2 Push for OOB Responses {#http2-push}
 
 An origin server MAY use HTTP/2 push to deliver OOB responses for subsequent requests from a client.
 
 Each OOB response can include resource map information for one or several resources.
 
-## Resource Map as a Web Resource using Link header field
+## Resource Map as a Web Resource using Link Header Field
 
 An origin server could provide a resource map location in an OOB response to a request for resource using a Link header field [RFC5988].
 
@@ -252,7 +234,9 @@ The cache should take actions to detect and manage request loops caused by erron
 
 There are currently no actions for IANA.
 
-# Appendix Example Basic JSON format for Resource Map
+--- back
+
+# Example Basic JSON Format for Resource Map
 
 The example below outlines an example of a JSON format containing two resource map entries.
 
@@ -284,25 +268,28 @@ The example below outlines an example of a JSON format containing two resource m
     ]
 ~~~
 
-# Appendix Multiple secondary server
+# Multiple Secondary Server
 
 An origin can provide multiple secondary servers for retrieving a resource or set of resources.
 
 For this reason, the origin server provides the client with a set of alternative secondary servers and an annotation with the intended usage in the resource map.
 
 For example:
+
 'sr: load balance'
+
 A string hinting to the client that requests SHOULD switch to next server in list in case the communication to the secondary server indicates high load, for instance secondary server responds with HTTP/2 GOAWAY message.
 
-´sr: fallback´
+'sr: fallback'
+
 A string hinting to client secondary server to try when first secondary not reachable.
 
 This implies there are attributes on server level and individual resource level.
 
 Resource Map for the case when the resources is placed on two different secondary servers.
 
-~~~
-{   /* Server level information */
+~~~ example   
+{
      "secondary-servers": {
          "server1": {
              "name": "blind cache 1",
@@ -319,7 +306,7 @@ Resource Map for the case when the resources is placed on two different secondar
              "port": 8082,
          }
      },
-     /* Resource level information */
+
      "resources": [{
          "resource-origin": "https://origin.com:8080/ex_jsl.js",
          "mapped-path": "/origin.com%3A8080/j39jl3jaac/29jfnf0f",
@@ -367,7 +354,7 @@ Resource Map for the case when the resources is placed on two different secondar
 }
 ~~~
 
-# Appendix Resource map in browser Service Worker
+# Resource Map in Browser Service Worker
 
 One way to realize secure content delegation based on OOB encoding is the use of [ServiceWorkers]. Service Workers allow extending default browser network stack behavior by sitting between the parent document and the network. Thus, if resource map information is available to the Service Worker JavaScript, it can be used to handle OOB  encoding based response processing. The Service Worker JS can easily be modified and extended to support different needs.
 
@@ -380,8 +367,7 @@ Future prototyping will explore this further.
 
 A summary of results of performance measurements on an experimental solution using Chrome SW is described in {{performance-measurements}}.
 
-# Appendix Performance experiments using the Resource Map approach
-{{#performance-measurements}}.
+# Performance Experiments using the Resource Map Approach {#performance-measurements}
 
 The resource map may contain one or more potential resources that the primary server wants the client to fetch from other delegated server(s). The client then can map the requests for the resources towards the map and sends request to appropriate secondary server and thus can skip sending request to the primary server.
 

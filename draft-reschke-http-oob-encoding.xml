@@ -89,7 +89,7 @@
       <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
     </t>
     <t>
-      The changes in this draft are summarized in <xref target="changes.since.07"/>.
+      The changes in this draft are summarized in <xref target="changes.since.08"/>.
     </t>
   </note>
 
@@ -1285,6 +1285,11 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 <t>
   Changed JSON format to allow annotation (optional flags) and entirely new types of entries.
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-08" anchor="changes.since.08">
+<t>
+  None yet.
 </t>
 </section>
 </section>

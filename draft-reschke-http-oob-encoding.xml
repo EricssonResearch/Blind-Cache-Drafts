@@ -240,6 +240,13 @@
   appropriate 4xx status code).
 </t>
 <t>
+  In addition to that, the secondary server's response &MUST; include a
+  "Content-Type" header field indicating an Internet media type
+  of "application/oob-stream". Clients &MUST; check for this media type
+  and abort out-of-band processing if no media type is specified, or if it
+  doesn't match this value.
+</t>
+<t>
   After receipt of the secondary resource's payload, the client then 
   reconstructs the original message by:
 </t>
@@ -406,6 +413,7 @@ Origin: https://www.example.com
 HTTP/1.1 200 OK
 Date: Thu, 14 May 2015 18:52:10 GMT
 Cache-Control: private
+Content-Type: application/oob-stream
 Content-Length: <x:length-of target="exbody2"/>
 
 <x:span anchor="exbody2">Hello, world.
@@ -498,6 +506,7 @@ Vary: Accept-Encoding
 <artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
 HTTP/1.1 200 OK
 Date: Thu, 14 May 2015 18:52:10 GMT
+Content-Type: application/oob-stream
 Content-Length: ...
 
 VDeU0XxaJkOJDAxPl7h9JD5V8N43RorP7PfpPdZZQuwF</artwork>
@@ -695,7 +704,10 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 <t>
   This scenario is addressed by the client requirement to include
   the "Origin" request header field and the server requirement to verify
-  that the request was initiated by an authorized origin.
+  that the request was initiated by an authorized origin. In addition,
+  the restriction of the secondary server response's media type
+  to "application/oob-stream" protects existing content on "regular"
+  servers not implementing this specification.
 </t>
 <aside>
   <t>
@@ -720,6 +732,7 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 </section>
 
 <section title="IANA Considerations" anchor="iana.considerations">
+<section title="Content Coding: out-of-band" anchor="iana.considerations.content-coding">
 <t>
   The IANA "HTTP Content Coding Registry", located at <eref target="http://www.iana.org/assignments/http-parameters"/>,
   needs to be updated with the registration below:
@@ -738,6 +751,70 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
     <xref target="ouf-of-band.content.coding"/> of this document
   </dd>
 </dl>
+</section>
+<section title="Internet Media Type: application/oob-stream" anchor="iana.considerations.media-type">
+<t>
+   IANA maintains the registry of Internet media types <xref target="BCP13"/> at
+   <eref target="http://www.iana.org/assignments/media-types"/>.
+</t>
+<t>
+   This document serves as the specification for the Internet media type
+   "application/oob-stream". The following is to be registered with
+   IANA.
+</t>
+<t>
+   The "application/oob-stream" media type represents a sequence of octets sent as part
+   of the "out-of-band" content coding protocol exchange. The sender does
+   not have any further information about the type of the enclosed data.
+   This type is different from "application/octet-stream" as it is known
+   not to be in use for pre-existing content.
+</t>
+<dl>
+  <dt>Type name:</dt>
+  <dd>application</dd>
+  <dt>Subtype name:</dt>
+  <dd>oob-stream</dd>
+  <dt>Required parameters:</dt>
+  <dd>N/A</dd>
+  <dt>Optional parameters:</dt>
+  <dd>N/A</dd>
+  <dt>Encoding considerations:</dt>
+  <dd>always "binary"</dd>
+  <dt>Security considerations:</dt>
+  <dd>see <xref target="security.considerations"/></dd>
+  <dt>Interoperability considerations:</dt>
+  <dd>N/A</dd>
+  <dt>Published specification:</dt>
+  <dd>This specification (see <xref target="iana.considerations.media-type"/>).</dd>
+  <dt>Applications that use this media type:</dt>
+  <dd>HTTP servers for secondary resources as defined by this specification.</dd>
+  <dt>Fragment identifier considerations:</dt>
+  <dd>N/A</dd>
+  <dt>Additional information:</dt>
+  <dd>
+    <dl>
+      <dt>Magic number(s):</dt>
+      <dd>N/A</dd>
+      <dt>Deprecated alias names for this type:</dt>
+      <dd>N/A</dd>
+      <dt>File extension(s):</dt>
+      <dd>N/A</dd>
+      <dt>Macintosh file type code(s):</dt>
+      <dd>N/A</dd>
+    </dl>
+  </dd>
+  <dt>Person and email address to contact for further information:</dt>
+  <dd>See Authors' Addresses section.</dd>
+  <dt>Intended usage:</dt>
+  <dd>COMMON</dd>
+  <dt>Restrictions on usage:</dt>
+  <dd>N/A</dd>
+  <dt>Author:</dt>
+  <dd>See Authors' Addresses section.</dd>
+  <dt>Change controller:</dt>
+  <dd>IESG</dd>
+</dl>
+</section>
 </section>
 
   </middle>
@@ -830,6 +907,18 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 </references>
 
 <references title="Informative References">
+
+<reference anchor="BCP13">
+  <front>
+    <title>Media Type Specifications and Registration Procedures</title>
+    <author initials="N." surname="Freed" fullname="Ned Freed"/>
+    <author initials="J." surname="Klensin" fullname="John C. Klensin"/>
+    <author initials="T." surname="Hansen" fullname="Tony Hansen"/>
+    <date year="2013" month="January"/>
+  </front>
+  <seriesInfo name="BCP" value="13"/>
+  <seriesInfo name="RFC" value="6838"/>
+</reference>
 
 <reference anchor='RFC2017'>
   <front>
@@ -1184,7 +1273,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-07" anchor="changes.since.07">
 <t>
-  None yet.
+  Restrict the valid media types for the response of the secondary server to "application/oob-stream".
 </t>
 </section>
 </section>

@@ -178,9 +178,11 @@
 <dl>
   <dt>'sr'</dt>
   <dd>
-    A &REQUIRED; string array containing at least one URI reference (<xref target="RFC3986" x:sec="4.1"/>)
-    of a secondary resource (URI references that are relative references are resolved against the URI
-    of the primary resource).
+    A &REQUIRED; array of JSON objects. Objects having a member named 'r'
+    describe a secondary resource, with the member's string value containing
+    a URI reference (<xref target="RFC3986" x:sec="4.1"/>) of the secondary
+    resource (URI references that are relative references are resolved against
+    the URI of the primary resource).
   </dd>
 <!--  <dt>'fallback'</dt>
   <dd>
@@ -197,14 +199,11 @@
   </dd>-->
 </dl>
 <t>
-  <cref anchor="pext">This payload might be too simple in that there's no simple way to annotate the secondary resources.</cref> 
-</t>
-<t>
   The payload format uses an array so that the origin server can specify
   multiple secondary resources. The ordering within the array reflects the
   origin server's preference (if any), with the most preferred secondary
   resource location being first. Clients receiving a response containing
-  multiple URIs are free to choose which of these to use.
+  multiple entries are free to choose which of these to use.
 </t>
 <t>
   In some cases, the origin server might want to specify a "fallback URI"; identifying
@@ -215,9 +214,13 @@
   used by clients when there is no other choice. 
 </t>
 <t>
-  New specifications can define new &OPTIONAL; member fields, thus clients
-  &MUST; ignore unknown fields. Extension specifications will have to update this
-  specification. <cref>or we define a registry</cref>
+  New specifications can define new &OPTIONAL; member fields, thus clients &MUST;
+  ignore unknown fields. Furthermore, new specifications can define new object
+  formats for the 'sr' array; however, they &MUST-NOT; use a member named 'r'
+  unless the semantics are compatible with those defined above.
+</t>
+<t>
+  Extension specifications will have to update this specification.
 </t>
 </section>
 <section title="Processing Steps" anchor="processing">
@@ -388,8 +391,10 @@ Vary: Accept-Encoding
 
 <x:span anchor="exbody" x:lang="">{
   "sr": [
-    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00",
-    "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"
+    { "r" :
+      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"},
+    { "r" :
+      "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"}
   ]
 }
 </x:span></artwork>
@@ -492,7 +497,8 @@ Vary: Accept-Encoding
 
 <x:span anchor="exbody4" x:lang="">{
   "sr": [
-    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"
+    { "r" :
+      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"}
   ]
 }
 </x:span></artwork>
@@ -601,8 +607,10 @@ Vary: Accept-Encoding
 
 <x:span anchor="exbodygz" x:lang="">{
   "sr": [
-    "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a01",
-    "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a01"
+    { "r" :
+      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a01"},
+    { "r" :
+      "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a01"}
   ]
 }
 </x:span></artwork>
@@ -1274,6 +1282,9 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 <section title="Changes since draft-reschke-http-oob-encoding-07" anchor="changes.since.07">
 <t>
   Restrict the valid media types for the response of the secondary server to "application/oob-stream".
+</t>
+<t>
+  Changed JSON format to allow annotation (optional flags) and entirely new types of entries.
 </t>
 </section>
 </section>

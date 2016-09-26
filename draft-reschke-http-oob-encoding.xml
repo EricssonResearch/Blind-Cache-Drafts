@@ -215,7 +215,7 @@
   used by clients when there is no other choice. 
 </t>
 <t>
-  New specifications can define new &OPTIONAL; header fields, thus clients
+  New specifications can define new &OPTIONAL; member fields, thus clients
   &MUST; ignore unknown fields. Extension specifications will have to update this
   specification. <cref>or we define a registry</cref>
 </t>

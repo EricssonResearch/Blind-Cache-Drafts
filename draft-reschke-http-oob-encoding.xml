@@ -305,69 +305,6 @@
 </t>
 </section>
 
-<section title="Problem Reporting" anchor="problem.reporting">
-<t>
-  When the client fails to obtain the secondary resource, it can be useful
-  to inform the origin server about the condition. This can be accomplished
-  by adding a "Link" header field (<xref target="RFC5988"/>) to a subsequent request to the origin server,
-  detailing the URI of the secondary resource and the failure reason.
-</t>
-<t>
-  The following link extension relations are defined:
-</t>
-<t>
-  <cref anchor="purl">purl.org seems to have turned read-only; we may need a different way to mint identifiers</cref>
-</t>
-<t>
-  <cref anchor="erwip">This is a rough proposal for an error reporting mechanism. Is it good enough? Is it needed at all?
-  Note that Alt-Svc doesn't have anything like this.</cref>
-</t>
-<section title="Server Not Reachable" anchor="rel-not-reachable">
-<t>
-  Used in case the server was not reachable.
-</t>
-<figure>
-<preamble>Link relation:</preamble>
-<artwork type="example">
-http://purl.org/NET/linkrel/not-reachable</artwork>
-</figure>
-</section>
-
-<section title="Resource Not Found" anchor="rel-resource-not-found">
-<t>
-  Used in case the server responded, but the object could not be obtained.
-</t>
-<figure>
-<preamble>Link relation:</preamble>
-<artwork type="example">
-http://purl.org/NET/linkrel/resource-not-found</artwork>
-</figure>
-</section>
-
-<section title="Payload Unusable" anchor="rel-payload-unusable">
-<t>
-  Used in case the payload could be obtained, but wasn't usable
-  (for instance, because integrity checks failed).
-</t>
-<figure>
-<preamble>Link relation:</preamble>
-<artwork type="example">
-http://purl.org/NET/linkrel/payload-unusable</artwork>
-</figure>
-</section>
-
-<section title="TLS Handshake Failure" anchor="rel-tls-handshake-failure">
-<t>
-  Used in case of a TLS handshare failure (<xref target="RFC5246"/>).
-</t>
-<figure>
-<preamble>Link relation:</preamble>
-<artwork type="example">
-http://purl.org/NET/linkrel/tls-handshake-failure</artwork>
-</figure>
-</section>
-</section>
-
 <section title="Examples">
 <section title="Basic Example" anchor="basic.example">
 <figure>
@@ -534,35 +471,6 @@ Content-Type: text/plain
   mechanism.
 </t>
 </x:note>
-</section>
-
-<section title="Example For Problem Reporting">
-<t>
-  Client requests primary resource as in <xref target="basic.example"/>, but the
-  attempt to access the secondary resource fails.
-</t>
-<figure>
-<preamble>Response:</preamble>
-<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
-HTTP/1.1 404 Not Found
-Date: Thu, 08 September 2015 16:49:00 GMT
-Content-Type: text/plain
-Content-Length: <x:length-of target="exbody404"/>
-
-<x:span anchor="exbody404">Resource Not Found
-</x:span></artwork>
-</figure>
-<figure>
-<preamble>Client retries with the origin server and includes Link
-header field reporting the problem:</preamble>
-<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
-GET /test HTTP/1.1
-Host: www.example.com
-Accept-Encoding: gzip, out-of-band
-Link: &lt;http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
-      rel="http://purl.org/NET/linkrel/resource-not-found"
-
-</artwork></figure>
 </section>
 
 <section title="Relation to Content Negotiation" anchor="relation.to.content.negotiation">
@@ -1041,6 +949,98 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 
 </references>
 
+<section title="Problem Reporting" anchor="problem.reporting">
+<t>
+  <cref anchor="erwip">This is a rough proposal for an error reporting mechanism. Is it good enough? Is it needed at all?
+  Note that Alt-Svc doesn't have anything like this.</cref>
+</t>
+<t>
+  When the client fails to obtain the secondary resource, it can be useful
+  to inform the origin server about the condition. This can be accomplished
+  by adding a "Link" header field (<xref target="RFC5988"/>) to a subsequent request to the origin server,
+  detailing the URI of the secondary resource and the failure reason.
+</t>
+<t>
+  The following link extension relations are defined:
+</t>
+<t>
+  <cref anchor="purl">need to register PURLs (now hosted by archive.org, FWIW)</cref>
+</t>
+<section title="Server Not Reachable" anchor="rel-not-reachable">
+<t>
+  Used in case the server was not reachable.
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/not-reachable</artwork>
+</figure>
+</section>
+
+<section title="Resource Not Found" anchor="rel-resource-not-found">
+<t>
+  Used in case the server responded, but the object could not be obtained.
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/resource-not-found</artwork>
+</figure>
+</section>
+
+<section title="Payload Unusable" anchor="rel-payload-unusable">
+<t>
+  Used in case the payload could be obtained, but wasn't usable
+  (for instance, because integrity checks failed).
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/payload-unusable</artwork>
+</figure>
+</section>
+
+<section title="TLS Handshake Failure" anchor="rel-tls-handshake-failure">
+<t>
+  Used in case of a TLS handshare failure (<xref target="RFC5246"/>).
+</t>
+<figure>
+<preamble>Link relation:</preamble>
+<artwork type="example">
+http://purl.org/NET/linkrel/tls-handshake-failure</artwork>
+</figure>
+</section>
+
+<section title="Example For Problem Reporting">
+<t>
+  Client requests primary resource as in <xref target="basic.example"/>, but the
+  attempt to access the secondary resource fails.
+</t>
+<figure>
+<preamble>Response:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+HTTP/1.1 404 Not Found
+Date: Thu, 08 September 2015 16:49:00 GMT
+Content-Type: text/plain
+Content-Length: <x:length-of target="exbody404"/>
+
+<x:span anchor="exbody404">Resource Not Found
+</x:span></artwork>
+</figure>
+<figure>
+<preamble>Client retries with the origin server and includes Link
+header field reporting the problem:</preamble>
+<artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test HTTP/1.1
+Host: www.example.com
+Accept-Encoding: gzip, out-of-band
+Link: &lt;http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
+      rel="http://purl.org/NET/linkrel/resource-not-found"
+
+</artwork></figure>
+</section>
+</section>
+
 <section title="Alternatives, or: why not a new Status Code?" anchor="alternatives">
 <t>
   A plausible alternative approach would be to implement this functionality one level
@@ -1287,7 +1287,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-08" anchor="changes.since.08">
 <t>
-  None yet.
+  Moved error reporting into appendix (because it's optional and we're not sure about the utility of it). See <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts/issues/4"/>.
 </t>
 </section>
 </section>

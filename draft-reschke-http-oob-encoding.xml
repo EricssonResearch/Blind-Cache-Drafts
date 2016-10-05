@@ -423,8 +423,6 @@ Content-Length: <x:length-of target="exbody2"/>
 
 <x:span anchor="exbody2">Hello, world.
 </x:span></artwork>
-<postamble>(Note no Content-Type header field is present here because the 
-secondary server truly does not know the media type of the payload)</postamble>
 </figure>
 <figure>
 <preamble>Final message after recombining header fields:</preamble>

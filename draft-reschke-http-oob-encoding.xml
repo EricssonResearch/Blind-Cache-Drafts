@@ -413,7 +413,7 @@ treated the same way.
 
 <section title="Example involving an encrypted resource">
 <t>
-  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="5.4"/>,
+  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="5.1"/>,
   a primary resource could use the 'out-of-band' coding to specify just
   the location of the secondary resource plus the contents of the 
   "Crypto-Key" header field needed to decrypt the payload: 
@@ -899,9 +899,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <front>
     <title>Encrypted Content-Encoding for HTTP</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="June" year="2016"/>
+    <date month="October" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-02"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-03"/>
 </reference>
 
 <reference anchor='CONTENTSIG'>
@@ -1288,6 +1288,9 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 <section title="Changes since draft-reschke-http-oob-encoding-08" anchor="changes.since.08">
 <t>
   Moved error reporting into appendix (because it's optional and we're not sure about the utility of it). See <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts/issues/4"/>.
+</t>
+<t>
+  Updated reference for ENCRYPTENC.
 </t>
 </section>
 </section>

@@ -1172,6 +1172,17 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 </section>
 
+<section title="Controlling Transmission Of Various Request Header Fields">
+<t>
+  Clients by default might include request header fields such as "User-Agent"
+  (or some of the newly defined "Client Hints") into their requests to the
+  secondary server. If the secondary server does not perform any
+  content negotiation, none of these header fields is actually useful,
+  so suppressing them by default might be a good idea to reduce fingerprinting.
+  In this case, we could allow the origin server to opt into sending some of
+  them though.
+</t>
+</section>
 </section>
 
 <section title="Change Log (to be removed by RFC Editor before publication)" anchor="change.log">
@@ -1291,6 +1302,9 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 <t>
   Updated reference for ENCRYPTENC.
+</t>
+<t>
+  Mention that we could suppress certain request header fields in the request to the secondary server.
 </t>
 </section>
 </section>

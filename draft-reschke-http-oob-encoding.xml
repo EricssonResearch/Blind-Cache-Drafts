@@ -917,9 +917,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <front>
     <title>Merkle Integrity Content Encoding</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="June" year="2016"/>
+    <date month="October" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-01"/>
+  <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-02"/>
 </reference>
 
 <reference anchor='SCD'>
@@ -928,9 +928,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
     <author initials='M.' surname='Thomson' fullname='Martin Thomson'/>
     <author initials='G.' surname='Eriksson' fullname='Goran Eriksson'/>
     <author initials='C.' surname='Holmberg' fullname='Christer Holmberg'/>
-    <date month='June' year='2016' />  
+    <date month='October' year='2016' />  
   </front>
-  <seriesInfo name='Internet-Draft' value='draft-thomson-http-scd-01' />
+  <seriesInfo name='Internet-Draft' value='draft-thomson-http-scd-02' />
 </reference>
 
 <reference anchor='CORS'
@@ -1301,7 +1301,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
   Moved error reporting into appendix (because it's optional and we're not sure about the utility of it). See <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts/issues/4"/>.
 </t>
 <t>
-  Updated reference for ENCRYPTENC.
+  Updated references for ENCRYPTENC, MICE, and SCD.
 </t>
 <t>
   Mention that we could suppress certain request header fields in the request to the secondary server.

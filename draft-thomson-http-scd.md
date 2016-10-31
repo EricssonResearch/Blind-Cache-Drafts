@@ -1,7 +1,7 @@
 ---
 title: An Architecture for Secure Content Delegation using HTTP
 abbrev: Secure Content Delegation
-docname: draft-thomson-http-scd
+docname: draft-thomson-http-scd-latest
 date: 2016
 category: std
 ipr: trust200902

@@ -79,12 +79,11 @@
       Discussions of the HTTPbis Working Group are archived at
       <eref target="http://lists.w3.org/Archives/Public/ietf-http-wg/"/>.               
     </t>
-    <!--<t>
-      XML versions, latest edits, and issue tracking for this document
-      are available from <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts"/> and
-      <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
-    </t>
     <t>
+      XML versions, latest edits, and issue tracking for this document
+      are available from <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts"/>.
+    </t>
+    <!--<t>
       The changes in this draft are summarized in <xref target="changes.since.08"/>.
     </t>-->
   </note>

@@ -1,480 +1,563 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc sortrefs="yes" ?>
+<?rfc symrefs="yes" ?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc-ext allow-markup-in-artwork="yes" ?>
+<?rfc-ext html-pretty-print="prettyprint https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"?>
 
 <!DOCTYPE rfc [
-<!ENTITY RFC2119 SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml/reference.RFC.2119.xml">
-<!ENTITY I-D.reschke-http-oob-encoding SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml3/reference.I-D.reschke-http-oob-encoding.xml">
-<!ENTITY I-D.thomson-http-mice SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml3/reference.I-D.thomson-http-mice.xml">
-<!ENTITY RFC7230 SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml/reference.RFC.7230.xml">
-<!ENTITY RFC7231 SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml/reference.RFC.7231.xml">
-<!ENTITY RFC5988 SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml/reference.RFC.5988.xml">
-<!ENTITY RFC6570 SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml/reference.RFC.6570.xml">
-<!ENTITY I-D.ietf-httpbis-encryption-encoding SYSTEM "http://unicorn-wg.github.io/idrefs/bibxml3/reference.I-D.ietf-httpbis-encryption-encoding.xml">
+  <!ENTITY mdash "&#8212;">
 ]>
 
-<?rfc toc="yes"?>
-<?rfc sortrefs="yes"?>
-
-<rfc ipr="trust200902" docName="draft-eriksson-http-rmap" category="info">
-
+<rfc xmlns:x="http://purl.org/net/xml2rfc/ext" ipr="trust200902" category="info" docName="draft-eriksson-http-resource-map-latest">
   <front>
-    <title>HTTP Resource map for out-of-band content delivery</title>
-
-    <author initials="G." surname="Eriksson" fullname="Göran AP Eriksson">
+    <title>
+        Resource Maps
+    </title>
+    <author fullname="Goran AP Eriksson" initials="G. A. P." surname="Eriksson">
       <organization>Ericsson</organization>
       <address>
+        <postal>
+          <street>Farogatan 6</street>
+          <code>16480</code>
+          <city>Stockholm</city>
+          <country>Sweden</country>
+        </postal>
         <email>goran.ap.eriksson@ericsson.com</email>
       </address>
     </author>
-    <author initials="C." surname="Holmberg" fullname="Christer Holmberg">
+    <author fullname="Christer Holmberg" initials="C." surname="Holmberg">
       <organization>Ericsson</organization>
       <address>
         <email>christer.holmberg@ericsson.com</email>
       </address>
     </author>
-    <author initials="Z." surname="Sarker" fullname="Zaheduzzaman Sarker">
+    <author fullname="Zaheduzzaman Sarker" initials="Z." surname="Sarker">
       <organization>Ericsson</organization>
       <address>
         <email>zaheduzzaman.sarker@ericsson.com</email>
       </address>
     </author>
-    <author initials="J." surname="Reschke" fullname="Julian Reschke">
-      <organization>Greenbytes</organization>
+    <author initials="J. F." surname="Reschke" fullname="Julian F. Reschke">
+      <organization abbrev="greenbytes">greenbytes GmbH</organization>
       <address>
+        <postal>
+          <street>Hafenweg 16</street>
+          <city>Muenster</city><region>NW</region><code>48155</code>
+          <country>Germany</country>
+        </postal>
         <email>julian.reschke@greenbytes.de</email>
+        <uri>http://greenbytes.de/tech/webdav/</uri>
       </address>
     </author>
 
-    <date year="2016"/>
-
+    <date year="2016" />
+    <area>Applications and Real-Time</area>
     
-    
-    
-
     <abstract>
+        <t> When the 'out-of-band' content coding ('OOB') is used for delivering a number of resources from a primary server via a secondary server, the additional round trips for OOB responses and load on the primary server can be a significant nuisance.</t>
 
+        <t> In such situations, it is useful for the primary server to be able to provide the client with OOB response information for several resources in one go anticipating future client requests.
+        </t>
 
-<t>When the ‘out-of-band’ content coding (‘OOB’) is used for delivering a number of resources from an origin server via a secondary server, the additional round trips for OOB responses from the origin server can be a significant nuisance.</t>
-
-<t>In such situations, it is useful for the origin to be able to provide the client with OOB response information for several resources in one go, anticipating future client requests.</t>
-
-<t>This document describes a format for providing the client with the information, called a resource map, and how the resource map could be delivered to a client.</t>
-
-<t>Discussion of this draft takes place on the HTTP working group mailing list (ietf-http-wg@w3.org), which is archived at <eref target="https://lists.w3.org/Archives/Public/ietf-http-wg/">https://lists.w3.org/Archives/Public/ietf-http-wg/</eref>.</t>
-
-
-
+        <t> This document describes a format for providing the client with the information, called a resource map, and how the resource map could be delivered to a client.
+        </t>
     </abstract>
+    
+  <note title="Editorial Note (To be removed by RFC Editor before publication)">
+    <t>
+      Distribution of this document is unlimited. Although this is not a work
+      item of the HTTPbis Working Group, comments should be sent to the 
+      Hypertext Transfer Protocol (HTTP) mailing list at <eref target="mailto:ietf-http-wg@w3.org">ietf-http-wg@w3.org</eref>,
+      which may be joined by sending a message with subject 
+      "subscribe" to <eref target="mailto:ietf-http-wg-request@w3.org?subject=subscribe">ietf-http-wg-request@w3.org</eref>.
+    </t>
+    <t>
+      Discussions of the HTTPbis Working Group are archived at
+      <eref target="http://lists.w3.org/Archives/Public/ietf-http-wg/"/>.               
+    </t>
+    <!--<t>
+      XML versions, latest edits, and issue tracking for this document
+      are available from <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts"/> and
+      <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
+    </t>
+    <t>
+      The changes in this draft are summarized in <xref target="changes.since.08"/>.
+    </t>-->
+  </note>
+</front>
 
+<middle>    
+    <section title="Introduction">
+<t>
+        The mechanisms outlined in "An Architecture for Secure Content Delegation using HTTP" <xref target="SCD"/> and "Caching Secure HTTP Content using Blind Caches" <xref target="BC"/> use the 'out-of-band' content coding ('OOB') mechanism <xref target="OOBENC"/> to delegate the delivery of requested resource from a primary server to one or several secondary servers.
+</t>
+<t>
+        A primary server might decide to delegate the delivery of response payload for a set of resources, for instance individual video segments, or a set of images or parts of a large file.
+</t>
+<t>
+        In one approach the client sends individual requests for each of the resources to the primary server which provides the OOB content coding response information for the requested resources as meta data in each and every request to the primary server. This approach adds a minimum of one extra RTT (round trip time) for each request before the client can send the request to the desired secondary server.
+</t>
+<t>
+        In another approach the primary server anticipates a client's requests, for instance leveraging object dependency graph information, to provide the client with OOB content coding information for the subsequent requests in advance of requests.
+</t>
+<t>
+        This document describes a format for providing the client with the information for multipe OOB responses, called a resource map, and how the information is delivered to a client.
+</t>
+<!--    <section title="Abbreviations">
+        <t>
+            TBD
+        </t>
+    </section>-->
 
-  </front>
-
-  <middle>
-
-
-<section anchor="introduction" title="Introduction">
-
-<t>The mechanisms outlined in ‘<xref target="HTTP-SCD"></xref>’ and ‘<xref target="HTTP-BC"></xref>’ use the ‘out-of-band’ content coding (‘OOB’) mechanism ‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ to delegate the delivery
-of resources from an origin server to a client via a secondary server.</t>
-
-<t>In some situations, a origin server might want to delegate the delivery of response payload for a set of resources, for instance video segments, or a set of images or parts of a large file.</t>
-
-<t>In one approach the client sends individual requests for each of the resources to the origin server and the origin server provides the OOB content coding response information for the requested resources as individual responses. This approach adds a minimum of one extra RTT (round trip time) for each resource, before the client can send the GET request to the desired secondary server.</t>
-
-<t>In another approach, to counter the extra RTT required, the origin server can provide OOB content coding information, OOB responses, for the subsequent requests in advance to a client, anticipating the need.
-The bundle of OOB mapping information from a primary server to a client for a set of resources is called a “resource map”.</t>
-
-</section>
-<section anchor="notational-conventions" title="Notational Conventions">
-
-<t>The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
- “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
-
-<t>This document reuses terminology used in the base HTTP
- specifications, namely Section 2 of <xref target="RFC7230"></xref> and Section 3 of
- <xref target="RFC7231"></xref>.</t>
-
-</section>
-<section anchor="the-resource-map" title="The Resource Map">
-
-<section anchor="overview" title="Overview">
-
-<t>The primary server creates a resource map containing information about how a set of resources on the origin server maps to a set of resource locations on one or multiple secondary servers.</t>
-
-<t>Henceforth, the information in a resource map is described as attributes.</t>
-
-<t>A resource map will include the attributes outlined in ‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ as well as additional attributes related to that it concerns multiple resources.</t>
-
-</section>
-<section anchor="basic-attributes" title="Basic Attributes">
-
-<t>‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ describes a set of attributes for a OOB response.  For convenience, an example is given below.</t>
-
-<t>Client request of a resource:</t>
-
-<figure><artwork type="example"><![CDATA[
-     GET /test HTTP/1.1
-     Host: www.example.com
-     Accept-Encoding: gzip, out-of-band
-]]></artwork></figure>
-
-<t>Response:</t>
-
-<figure><artwork type="example"><![CDATA[
-     HTTP/1.1 200 OK
-     Date: Thu, 14 May 2015 18:52:00 GMT
-     Content-Type: text/plain
-     Cache-Control: max-age=10, public
-     Content-Encoding: out-of-band
-     Content-Length: 133
-     Vary: Accept-Encoding
-
-     {
-       "sr": [
-         "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00",
-         "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"
-       ]
-     }
-]]></artwork></figure>
-<t>The attributes are described in ‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ but a brief description is provided here for convenience.
-Editor’s note: A minimal set of attributes is described below. Additional attributes such as fall back location described in <xref target="I-D.reschke-http-oob-encoding"></xref>
-are not included here but described in <xref target="additional-attributes"/>.</t>
-
-<t>The ‘Resource-Origin’ attribute contains the resource URL at the origin.</t>
-
-<t>The ‘Resource-Mapped’ attribute contains the resource URL on the secondary server.</t>
-
-<t>In addition to location related information, the resource map includes other information required to recompose the HTTP response from the origin server, such as ‘content-type’, integrity and encryption information, etc. as outlined in ‘<xref target="I-D.reschke-http-oob-encoding"></xref>’.</t>
-
-<t>These are described below for convenience:</t>
-
-<t>Content-Type: The content type associated with the resource content.
-The value is the same as in the HTTP Content-Type header field value as if the resource was provided directly by the origin to the client.</t>
-
-<t>Content-Encoding: List of content encoding procedures that have been applied by the origin to the resource when delivered via out-of-band.</t>
-
-<t>MI: Information to verify the integrity of the data delivered via a secondary server as defined in <xref target="I-D.thomson-http-mice"></xref>.</t>
-
-<t>Encryption: Value of “Encryption” response header field defined in
-<xref target="I-D.ietf-httpbis-encryption-encoding"></xref>.</t>
-
-<t>When using the resource map, the primary server could use a template or formula to optimize the size of the resource map information. For example, using URI templates <xref target="RFC6570"></xref>, and an agreed upon HMAC of the path postfix, it would be possible to specify a mapping for many URIs at once.</t>
-
-<figure><artwork type="example"><![CDATA[
-originURI = "https://{origin}/images/{postfix}
-mappedURI = "https://cache.example.com/{origin}/images/{hmac-of-postfix}
-]]></artwork></figure>
-
-<t>…would indicate a mapping for any https URI on “origin” below a root path of
-“/images/”, where the mapped URI would be constructed by concatenating
-“https://cache.example.com/”, the origin’s host name, “/images/”, and a base64- or hex-encoded opaque part, computed based on the remainder of the origin URI’s path.</t>
-
-</section>
-<section anchor="additional-attributes" title="Additional Resource Map Attributes">
-
-<t>In addition to the attributes discussed above, an origin server could add other attributes in the resource map extending those in <xref target="I-D.reschke-http-oob-encoding"></xref>.</t>
-
-<t>Max-Age: When expired, secondary server should validate resource status with origin server.</t>
-
-</section>
-</section>
-<section anchor="resource-map-delivery" title="Resource Map Delivery">
-
-<t>There are several ways for how to deliver the resource map from a primary server to a client. Which is most appropriate vary with client type.</t>
-
-<t>The resource map delivery MUST be done using TLS or similar with sufficient means for securing the identity of the origin server and avoid MITM accessing the information.</t>
-
-<t>A resource map might be large. For this reason a client MAY use compression techniques such as ‘gzip’ to decrease the size.</t>
-
-<t>— Editors note:
-Resource constrained devices could possibly benefit from a CBOR format.</t>
-
-<section anchor="basic-method" title="Basic Method">
-
-<t>‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ uses a method where the OOB information is returned in the payload of the response from the origin server to a client request for a resource.</t>
-
-<t>This method could also be used to include a resource map for multiple resources inside a single OOB response.</t>
-
-</section>
-<section anchor="http2-push" title="Using HTTP/2 Push for OOB Responses">
-
-<t>An origin server MAY use HTTP/2 push to deliver OOB responses for subsequent requests from a client.</t>
-
-<t>Each OOB response can include resource map information for one or several resources.</t>
-
-</section>
-<section anchor="resource-map-as-a-web-resource-using-link-header-field" title="Resource Map as a Web Resource using Link Header Field">
-
-<t>An origin server could provide a resource map location in an OOB response to a request for resource using a Link header field <xref target="RFC5988"></xref>.</t>
-
-<figure><artwork type="example"><![CDATA[
-  Link: </map>; rel="http://purl.org/NET/linkrel/resource-map"
-]]></artwork></figure>
-
-<t>An origin server can speculatively anticipate a client requesting a resource map and could use HTTP/2 to push the response with the resource map to the client to avoid the extra delay a request for resource map otherwise would incur.</t>
-
-</section>
-</section>
-<section anchor="security-considerations" title="Security Considerations">
-
-<t>All the considerations of <xref target="HTTP-SCD"></xref> apply.</t>
-
-<t>A resource map can be used to cause the client to request malicious content or perform DoS attacks on a victim secondary server. Clients MUST verify that the identity of server providing the Resource Map.</t>
-
-<t>In the case the resource map is delivered as a separate Web resource, the client MUST verify that the server providing the resource map belong to the same authority as the
-primary server.</t>
-
-<t>The cache should take actions to detect and manage request loops caused by erroneous request from a client.</t>
-
-<t>— Issue: A resource map attribute that is applicable for a set of resources may open up for mixed attacker-controlled data and secrets… (to be continued).</t>
-
-</section>
-<section anchor="iana-considerations" title="IANA Considerations">
-
-<t>There are currently no actions for IANA.</t>
-
+<section title="Notational Conventions" anchor="notational.conventions">
+<t>
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in <xref target="RFC2119"/>.
+</t>
 </section>
 
+    </section>
 
-  </middle>
+    <section title="Basic procedure for providing a Resource Map">
 
-  <back>
+    <t>A primary server creates a resource map containing information about how a set of resources on the origin it serves maps to a set of resource locations on one or multiple secondary servers.
+    </t>
+  <t>
+    <xref target="OOBENC"/> describes the basic procedure for providing the client with the OOB response meta data for an individual request, as examplified below:
+</t>
+<t>
+    Client request of a resource:
+</t>
+<figure><artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
+GET /test HTTP/1.1
+Host: www.example.com
+Accept-Encoding: gzip, out-of-band
 
-    <references title='Normative References'>
+</artwork></figure>
+<t>
+    Response from primary server:
+</t>
+<figure><artwork type="message/http; msgtype=&#34;response&#34;" x:indent-with="  ">
+HTTP/1.1 200 OK
+Date: Thu, 14 May 2015 18:52:00 GMT
+Content-Type: text/plain
+Cache-Control: max-age=10, public
+Content-Encoding: out-of-band
+Content-Length: <x:length-of target="exbody"/>
+Vary: Accept-Encoding
 
-&RFC2119;
-&I-D.reschke-http-oob-encoding;
-&I-D.thomson-http-mice;
-&RFC7230;
-&RFC7231;
-&RFC5988;
-<reference anchor="HTTP-SCD" target="draft-thomson-http-scd.html">
-  <front>
-    <title>An Architecture for Secure Content Delegation using HTTP</title>
-    <author initials="M." surname="Thomson">
-      <organization></organization>
-    </author>
-    <author initials="G." surname="Eriksson">
-      <organization></organization>
-    </author>
-    <author initials="C." surname="Holmberg">
-      <organization></organization>
-    </author>
-    <date year="n.d."/>
-  </front>
-</reference>
-<reference anchor="HTTP-BC" target="draft-thomson-http-bc.html">
-  <front>
-    <title>Caching Secure HTTP Content using Blind Caches</title>
-    <author initials="M." surname="Thomson">
-      <organization></organization>
-    </author>
-    <author initials="C." surname="Holmberg">
-      <organization></organization>
-    </author>
-    <author initials="G." surname="Eriksson">
-      <organization></organization>
-    </author>
-    <date year="n.d."/>
-  </front>
-</reference>
+<x:span anchor="exbody" x:lang="">{
+  "sr": [
+    { "r" :
+      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"},
+    { "r" :
+      "/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"}
+  ]
+}
+</x:span></artwork></figure>
+<t>
+    A primary server can provide a Resource Map location in any response to a request for any resource using a Link header field <xref target="RFC5988"/> &mdash; this can
+be an OOB response like the one above, but doesn't need to.
+</t>
+<figure><artwork type="example">
+  Link: &lt;/map>; rel="http://purl.org/NET/linkrel/resource-map"
+</artwork></figure>
+<t>
+  Note that in this example, "/map" is a relative reference identifying the 
+  resource map (relative to the request URI), and "http://purl.org/NET/linkrel/resource-map" is the identifier for the link
+relation "resource map".
+</t>
+<t>
+    A primary server can speculatively anticipate a client requesting a Resource Map and MAY use HTTP/2 <xref target="RFC7540"/> to push the response with the Resource Map to the client to decrease the extra delay a request for resource map otherwise would incur.
+</t>
+<t>
+    The basic operation for providing the client with a Resource Map is as follows:
+</t>
+<ol>
+  <li>Client requests resource from primary. Request includes Accept-Encoding header field including "out-of-band".</li>
+  <li>Primary server response includes Link header field identifying the resource map.</li>
+  <li>Client retrieves the resource map.</li>
+  <li>Resource Map becomes stale and will be retrieved again.</li>
+</ol>
+    </section>
 
+  <section title="Updating the Resource Map">
 
-    </references>
+    <section title="Primary server need to update Resource Map">
+<t>
+    Depending on the nature of the application and the resources, the primary server's need to provide the client with updates of the resource map information vary. In some cases there is no or little need for updates, in others there may be reasons for more frequent updates.
+</t>
+<t>
+    For instance, delegation information for static resources such as banners, images and script libraries for analytics might not change. In such a situation, the primary server does not need to stay in touch with the client to provide it with updates.
+</t>
+<t>
+    In another use case, the primary server provides the client with updates, for instance changing the secondary servers to be used by a mobile client.
+</t>
+<t>
+    Basically there are four approaches for a primary server to provide a client with updates to a resource map:
+</t>
+<ul>
+  <li>Piggyback signal about update on response to request from client</li>
+  <li>Client subscribes to Web Push updates</li>
+  <li>Client receives continuous updates</li>
+  <li>Resource Map validity time-out</li>
+</ul>
+    </section>
 
-    <references title='Informative References'>
+    <section title="Piggyback">
+      <t>
+        A primary server MAY add an Link header field to any response to a client. A client receiving a response with a Link header MUST retrieve the Resource Map web resource and process it.
+</t>
+    </section>
+    <section title="Using Web Push">
+      <t>
+        A primary server MAY add an indication in the Resource Map to the client to use a notification service to receive updates to a Resource Map. When present a client SHOULD register for notifications.
+      </t>
+      <t>
+        A client receiving a Resource Map update notification MUST retrieve the Resource Map using the location information in the notification.
+      </t>
+    </section>
 
-&RFC6570;
-&I-D.ietf-httpbis-encryption-encoding;
-<reference anchor="Fetch" target="https://fetch.spec.whatwg.org">
-  <front>
-    <title>Fetch</title>
-    <author >
-      <organization></organization>
-    </author>
-    <date year="n.d."/>
-  </front>
-</reference>
-<reference anchor="ServiceWorkers" target="https://www.w3.org/TR/service-workers/">
-  <front>
-    <title>Service Workers</title>
-    <author initials="A." surname="Russell">
-      <organization></organization>
-    </author>
-    <author initials="J." surname="Song">
-      <organization></organization>
-    </author>
-    <author initials="J." surname="Archibald">
-      <organization></organization>
-    </author>
-    <date year="n.d."/>
-  </front>
-</reference>
-<reference anchor="DASH" target="http://www.iso.org/iso/home/store/catalogue_ics/catalogue_detail_ics.htm?csnumber=65274">
-  <front>
-    <title>Information technology -- Dynamic adaptive streaming over HTTP (DASH) -- Part 1: Media presentation description and segment formats</title>
-    <author >
-      <organization>International Organization for Standardization</organization>
-    </author>
-    <date year="2014" month="May"/>
-  </front>
-  <seriesInfo name="ISO/IEC" value="23009-1:2014"/>
-</reference>
+    <section title="Continuous Updates">
+      <t>
+        In some situations, it is desirable to provide the client with a stream of Resource Map updates. Depending on the client type, either a secure bi-directional transport protocol is used, such as WebSocket, or the client is instructed to poll for changes.
+      </t>
+      <t>
+        A primary server MAY add an indication to the client to either poll or use a stream oriented protocol for receiving intermittent, frequent updates.
+      </t>
+    </section>
 
+    <section title="Resource Map Timer">
+    <t>
+        The freshness of a Resource Map can be given by the 'ma' timer. When expired, the OOB delegation is not valid and the client MUST request an update from the primary server
+        (this duplicates HTTP cache information, but might become important when the resource map is transmitted over a protocol other than HTTP).
+    </t>
+    </section>
 
-    </references>
+    <section title="Resource Map compression">
+        <section title="gzip">
+        <t>
+        A resource map might be large. For this reason a client can use compression content codings such as 'gzip' to decrease the size.
+        </t>
+        </section>
+        <section title="Formulas">
+        <t>
+            When using the resource map, the primary server could use a template or formula to optimize the size of the resource map information. For example, using URI templates <xref target="RFC6570"/>, and an agreed upon HMAC of the path postfix, it would be possible to specify a mapping for many URIs at once.
+        </t>    
+        <t>
+<figure><artwork type="example">
+originURI = 
+  "https://{origin}/images/{postfix}
+mappedURI = 
+  "https://cch.example.com/{origin}/images/{hmac-of-postfix}
+</artwork></figure>
+        </t>
+        <t>
+        ...would indicate a mapping for any https URI on "origin" below a root path of
+        "/images/", where the mapped URI would be constructed by concatenating
+        "https://cch.example.com/", the origin's host name, "/images/", and a base64- or hex-encoded opaque part, computed based on the remainder of the origin URI's path.
+        </t>
+        </section>
 
+    </section>
+  </section>
 
-<section anchor="example-basic-json-format-for-resource-map" title="Example Basic JSON Format for Resource Map">
+    <section title="The Resource Map format">
 
-<t>The example below outlines an example of a JSON format containing two resource map entries.</t>
+        <section title="Definitions">
+<t>
+            A resource map will use and extend attributes outlined in <xref target="OOBENC"/> as well as additional extension attributes to be defined later.
+</t>
+<t>
+            The format of the resource map uses JavaScript Object Notation (JSON, <xref target="RFC7159"/>) describing a set of objects:
+</t>
+<ul>
+  <li>Objects for describing handling of updates of a resource map.</li>
+  <li>Objects for describing secondary servers and which resources that are mapped.</li>
+  <li>Objects for describing the resources on the secondary servers.</li>
+</ul>
 
-<figure><artwork type="example"><![CDATA[
-    [
-        {
-            "Resource-Origin": "https://origin.com/ex_jsl.js",
-            "Resource-Mapped": "https://bc.com/origin.com/564xaG",
-            "attributes":
-            {
-                "Content-Type": "application/javascript",
-                "Content-Encoding": "gzip",
-                "Max-Age": <Number>,
-                "MI": "keyid=...; salt=...",
-                "Encryption": <String>,
-            }
-        },
-        {
-            "Resource-Origin": "https://origin.com/style.css",
-            "Resource-Mapped": "https://bc.com/origin.com/qa5Yr4",
-            "attributes":
-            {
-                "Content-Type": "text/css",
-                "Max-Age": <Number>,
-                "MI": "keyid=...; salt=...",
-                "Encryption": <String>,
-            }
-        }
-    ]
-]]></artwork></figure>
-
-</section>
-<section anchor="multiple-secondary-server" title="Multiple Secondary Server">
-
-<t>An origin can provide multiple secondary servers for retrieving a resource or set of resources.</t>
-
-<t>For this reason, the origin server provides the client with a set of alternative secondary servers and an annotation with the intended usage in the resource map.</t>
-
-<t>For example:</t>
-
-<t>‘sr: load balance’</t>
-
-<t>A string hinting to the client that requests SHOULD switch to next server in list in case the communication to the secondary server indicates high load, for instance secondary server responds with HTTP/2 GOAWAY message.</t>
-
-<t>‘sr: fallback’</t>
-
-<t>A string hinting to client secondary server to try when first secondary not reachable.</t>
-
-<t>This implies there are attributes on server level and individual resource level.</t>
-
-<t>Resource Map for the case when the resources is placed on two different secondary servers.</t>
-
-<figure><artwork type="example"><![CDATA[
+        <figure>
+            <artwork type="example"><![CDATA[
 {
-     "secondary-servers": {
-         "server1": {
-             "name": "blind cache 1",
-             "address": "bc.com",
-             "protocol": "https",
-             "port": 8083,
-             "description": "Some text for debugging"
-             }
-         },
-         "server2": {
-             "name": "blind cache 2",
-             "address": "bc2.com",
-             "protocol": "https",
-             "port": 8082,
-         }
-     },
+    "resource-map-updates" : {
 
-     "resources": [{
-         "resource-origin": "https://origin.com:8080/ex_jsl.js",
-         "mapped-path": "/origin.com%3A8080/j39jl3jaac/29jfnf0f",
-         "attributes": {
-             "Content-Type": "application/javascript",
-             "Content-Encoding": "aesgcm-128",
-             "MI": ".....",
-             "Encryption": "....."
-         }
-         "mapped": [
-             {
-                 "server": "server1",
-                 "attributes": {
-                     "Max-Age": 1800
-                 }
-             },
-             {
-                 "server": "server2",
-                 "attributes": {
-                     "Max-Age": 1800
-                 }
-             }
-         ]
-     },
-     {
-         "resource-origin": "https://origin.com:8080/another_resource.txt",
-         "mapped-path": "/origin.com%3A8080/i39jfu2/1njknbs3",
-         "attributes": {
-             "Content-Type": "text/plain",
-             "Content-Encoding": "aesgcm-128",
-             "MI": ".....",
-             "Encryption": "....."
-         }
-         "mapped": [
-             {
-                 "server": "server2",
-                 "attributes": {
-                     "Max-Age": 1800
-                 }
-             }
-         ]
-     }
+        //Information about resource map updates.
 
-     ]
+    },
+
+    "secondary-servers" : { 
+
+        //Information about secondary servers.
+
+    },
+
+    "resources" : [ 
+
+        //Information about resources on secondary servers.
+
+    ]
 }
 ]]></artwork></figure>
 
-</section>
-<section anchor="resource-map-in-browser-service-worker" title="Resource Map in Browser Service Worker">
-
-<t>One way to realize secure content delegation based on OOB encoding is the use of <xref target="ServiceWorkers"></xref>. Service Workers allow extending default browser network stack behavior by sitting between the parent document and the network. Thus, if resource map information is available to the Service Worker JavaScript, it can be used to handle OOB  encoding based response processing. The Service Worker JS can easily be modified and extended to support different needs.</t>
-
-<t>Thus, leveraging the Service Workers mechanism along with <xref target="Fetch"></xref> and other browser features, a rich and extensible interaction between the web application and origin server is possible. Moreover, it enables signal compression techniques, similar to those used in streaming media manifests <xref target="DASH"></xref>, between the primary server and the client compared to server pushing the OOB encoding
-information per resource and does not require the explicit use of HTTP/2 Push, still recognizing the value of HTTP/2 Push for minimizing latency.</t>
-
-<t>The same may be possible to implement in the browser HTTP layer, presumably improving processing and mobile battery consumption characteristics. A mixed approach could also be envisioned, providing a basic, high performance client support with JS API for extensions.</t>
-
-<t>Future prototyping will explore this further.</t>
-
-<t>A summary of results of performance measurements on an experimental solution using Chrome SW is described in <xref target="performance-measurements"/>.</t>
-
-</section>
-<section anchor="performance-measurements" title="Performance Experiments using the Resource Map Approach">
-
-<t>The resource map may contain one or more potential resources that the primary server wants the client to fetch from other delegated server(s). The client then can map the requests for the resources towards the map and sends request to appropriate secondary server and thus can skip sending request to the primary server.</t>
-
-<t>By doing such optimization the client not only can save those extra RTTs but also can save both transport and processing cost for the primary server and on the network.</t>
-
-<t>Experiments with a simple web page with only 7 resources to fetch shows that if the RTT between the client and the primary server 200ms and 300ms in two different tests then average load time with HTTPS (end to end TLS) for that page was 2.073s and 3.066s respectively for 200ms and 300ms RTT legs.
-In this case if the ‘<xref target="I-D.reschke-http-oob-encoding"></xref>’ mechanism is used for all the resources then obviously the total load time will be higher than compared to resources server by the primary server. Later in the same test setup we added a delegation node in the scenario with 40ms RTT between the client and delegate
-node and used a resource map to deliver all the cache location of the resources piggybacked on the first request to the secondary server.</t>
-
-<t>As a result 5 out of 7 resources were fetched form the cache node without sending request to the origin server. The page load time decreased by 30.2% and 27.6% for respective 300ms and 200ms RTT between the client and primary server setup. The statistics from HTTP Archive (<eref target="http://httparchive.org/">http://httparchive.org/</eref>) shows that almost 50% of websites has about 26-100 requests per page for different kinds of resources. If we assume 200ms RTT between the client and
-the primary server and 50 requests for a certain page with at most 6 parallel requests and add an extra RTT towards the delegate node before the client actually receives the desired resource, then it is kind of obvious that the gain will be even higher.</t>
-
-</section>
+        </section>
 
 
-  </back>
+        <section title="Updates for Resource Map">
+<t>
+  <cref>Details to be done. Example below illustrates how this could be used.</cref>
+</t>
+            <figure>
+                <artwork type="example"><![CDATA[
+{
+    "resource-map-updates" : {
+        "max-age" : [ ],
+        "web push" : {
+            "notification service" : [ ]    // URL
+            ...                             // Other Web Push details
+        },
+        "online" : {
+            "poll" : {
+                "intervall" : [ ]   //Poll 
+            }
+            "connect" : [  ]  // TODO: Relation to URL in Link <map>?
+        }, 
+}
+]]></artwork></figure>
+
+        </section>
+        
+        <section title="Secondary Servers and Mapping of Resources">
+        <t>
+  <cref>Details to be done.</cref>
+        </t>
+<!--        <figure><artwork type="example">
+{
+
+    "secondary-servers" : { 
+    ...
+},
+    "resources": [ ],
+}
+</artwork></figure>-->
+
+    </section>
+    </section>
+
+    <section title="Security Considerations">
+      <t>
+        All the considerations of <xref target="OOBENC"/> and <xref target="SCD"/> apply.
+      </t>
+      <t>
+        A resource map can be used to cause the client to request malicious content or perform DoS attacks on a victim secondary server. Clients MUST verify the identity of server providing the Resource Map.
+      </t>
+      <t>
+        In the case the resource map is delivered as a separate Web resource, the client MUST verify that the server providing the resource map belong to the same authority as the primary server.  
+      </t>
+      <t>
+        The secondary server SHOULD take actions to detect and manage request loops caused by erroneous request from a client.
+      </t>
+      <t>
+        <cref>TODO: Using tokens for access control to secondary.</cref>
+        <cref>Issue: A resource map attribute that is applicable for a set of resources may open up for mixed attacker-controlled data and secrets.</cref>
+      </t>
+    </section>
+    
+    <section title="IANA Considerations">
+        <t>
+            This document currently has no actions for IANA.
+        </t>
+    </section>
+
+
+</middle>
+
+<back>
+  <references title="Normative References">
+    <reference anchor="RFC2119">
+      <front>
+        <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+        <author initials="S." surname="Bradner" fullname="Scott Bradner"/>
+        <date month="March" year="1997"/>
+      </front>
+      <seriesInfo name="BCP" value="14"/>
+      <seriesInfo name="RFC" value="2119"/>
+    </reference>
+
+    <reference anchor='RFC5988'>
+      <front>
+        <title>Web Linking</title>
+        <author initials='M.' surname='Nottingham' fullname='M. Nottingham'/>
+        <date year='2010' month='October' />
+      </front>
+      <seriesInfo name='RFC' value='5988'/>
+    </reference>
+
+    <reference anchor='RFC7159'>
+      <front>
+        <title>The JavaScript Object Notation (JSON) Data Interchange Format</title>
+        <author initials='T.' surname='Bray' fullname='T. Bray'/>
+        <date year='2014' month='March' />
+      </front>
+      <seriesInfo name='RFC' value='7159' />
+    </reference>
+
+    <reference anchor='OOBENC'>
+      <front>
+        <title>'Out-Of-Band' Content Coding for HTTP</title>
+        <author initials='J' surname='Reschke' fullname='Julian F. Reschke'/>
+        <author initials='S' surname='Loreto' fullname='Salvatore Loreto'/>
+        <date month='October' year='2016'/>
+      </front>
+      <seriesInfo name="Internet-Draft" value="draft-reschke-http-oob-09"/>
+    </reference>
+  </references>
+  
+  <references title="Informative References">
+    <reference  anchor='RFC6570' target='http://www.rfc-editor.org/info/rfc6570'>
+      <front>
+        <title>URI Template</title>
+        <author initials='J.' surname='Gregorio' fullname='J. Gregorio'/>
+        <author initials='R.' surname='Fielding' fullname='R. Fielding'/>
+        <author initials='M.' surname='Hadley' fullname='M. Hadley'/>
+        <author initials='M.' surname='Nottingham' fullname='M. Nottingham'/>
+        <author initials='D.' surname='Orchard' fullname='D. Orchard'/>
+        <date year='2012' month='March' />
+      </front>
+      <seriesInfo name='RFC' value='6570'/>
+    </reference>
+
+    <reference anchor="RFC7540">
+      <front>
+        <title>Hypertext Transfer Protocol version 2</title>
+        <author initials="M." surname="Belshe" fullname="Mike Belshe"/>
+        <author initials="R." surname="Peon" fullname="Roberto Peon"/>
+        <author initials="M." surname="Thomson" fullname="Martin Thomson" role="editor"/>
+        <date month="May" year="2015"/>
+      </front>
+      <seriesInfo name="RFC" value="7540"/>
+    </reference>
+
+    <reference anchor="BC">
+      <front>
+        <title>Caching Secure HTTP Content using Blind Caches</title>
+        <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
+        <author initials="G." surname="Eriksson" fullname="Goran Eriksson"/>
+        <author initials="C." surname="Holmberg" fullname="Christer Holmberg"/>
+        <date month="October" year="2016"/>
+      </front>
+      <seriesInfo name="Internet-Draft" value="draft-thomson-http-bc-01"/>
+    </reference>
+
+    <reference anchor="SCD">
+      <front>
+        <title>
+        An Architecture for Secure Content Delegation using HTTP
+        </title>
+        <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
+        <author initials="G." surname="Eriksson" fullname="Goran Eriksson"/>
+        <author initials="C." surname="Holmberg" fullname="Christer Holmberg"/>
+        <date month="October" year="2016"/>
+      </front>
+      <seriesInfo name="Internet-Draft" value="draft-thomson-http-scd-02"/>
+    </reference>
+  </references>
+
+  <!--
+  <section title="Call Flows">
+      <section title="Client initiated cache priming">
+
+      </section> 
+  </section>-->
+    
+
+  <section title="Multiple Secondary Servers">
+      <t>
+A primary server can provide multiple secondary servers for retrieving a resource or set of resources.
+      </t>
+      <t>
+A Resource Map for the case when resources on "https://origin.example.com:8080" are mapped to two different secondary servers:
+      </t>
+<figure><artwork type="example" x:lang="">
+{
+  "secondary-servers": {
+    "server1": {
+      "name": "blind cache 1",
+      "address": "bc.example.com",
+      "protocol": "https",
+      "port": 8083,
+      "description": "Some text for debugging"
+    },
+    "server2": {
+      "name": "blind cache 2",
+      "address": "bc2.example.com",
+      "protocol": "https",
+      "port": 8082
+    }
+  },
+ 
+  "resources": [
+    {
+      "resource-origin": "/ex_jsl.js",
+      "mapped-path":
+          "/origin.example.com%3A8080/j39jl3jaac/29jfnf0f",
+      "attributes": {
+        "Content-Type": "application/javascript",
+        "Content-Encoding": "aesgcm",
+        "MI": ".....",
+        "Crypto-Key": "....."
+      },
+      "mapped": [
+        {
+          "server": "server1",
+          "attributes": {
+            "Max-Age": 1800
+          }
+        },
+        {
+          "server": "server2",
+          "attributes": {
+            "Max-Age": 1800
+          }
+        }
+      ]
+    },
+    {
+      "resource-origin": "/another_resource.txt",
+      "mapped-path":
+          "/origin.example.com%3A8080/i39jfu2/1njknbs3",
+      "attributes": {
+        "Content-Type": "text/plain",
+        "Content-Encoding": "aesgcm",
+        "MI": ".....",
+        "Crypto-Key": "....."
+      },
+      "mapped": [
+        {
+          "server": "server2",
+          "attributes": {
+            "Max-Age": 1800
+          }
+        }
+      ]
+    }
+  ]
+}</artwork></figure>
+<t>
+  <cref>in the above example, why does resource-origin include scheme/host/port?</cref>
+</t>
+
+  </section>
+
+  <section title="Change Log (To be removed before publication as RFC">
+    <t>Nothing yet.</t>
+  </section>
+
+  
+</back>
 </rfc>
-

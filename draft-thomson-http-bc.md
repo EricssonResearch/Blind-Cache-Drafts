@@ -178,7 +178,7 @@ discovered domain name.
 Issue:
 
 : What signal do we need from the proxy cache that it supports receiving
-  requests with an https:// scheme?  Can we expect that a proxy cache will
+  requests with an `https://` scheme?  Can we expect that a proxy cache will
   happily accept a request for an HTTPS URL?  What if they ignore the scheme and
   send the request in the clear?
 

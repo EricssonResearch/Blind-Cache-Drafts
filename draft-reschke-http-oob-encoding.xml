@@ -413,7 +413,7 @@ treated the same way.
 
 <section title="Example involving an encrypted resource">
 <t>
-  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="5.1"/>,
+  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="4.1"/>,
   a primary resource could use the 'out-of-band' coding to specify just
   the location of the secondary resource plus the contents of the 
   "Crypto-Key" header field needed to decrypt the payload: 
@@ -423,10 +423,9 @@ treated the same way.
 <artwork type="message/http; msgtype=&#34;request&#34;" x:indent-with="  ">
 HTTP/1.1 200 OK
 Date: Thu, 14 May 2015 18:52:00 GMT
-Content-Encoding: aesgcm, out-of-band
+Content-Encoding: aes128gcm, out-of-band
 Content-Type: text/plain
-Encryption: keyid="a1"; salt="vr0o6Uq3w_KDWeatc27mUg"
-Crypto-Key: keyid="a1"; aesgcm="csPJEXBYA5U-Tal9EdJi-w"
+Crypto-Key: aes128gcm=B33e_VeFrOyIHwFTIfmesA
 Content-Length: <x:length-of target="exbody4"/>
 Vary: Accept-Encoding
 
@@ -450,8 +449,9 @@ Date: Thu, 14 May 2015 18:52:10 GMT
 Content-Type: application/oob-stream
 Content-Length: ...
 
-VDeU0XxaJkOJDAxPl7h9JD5V8N43RorP7PfpPdZZQuwF</artwork>
-<postamble>(payload body shown in base64 here)</postamble>
+9Y1iaZMzICC05DO3y8dWiAAAopoAzpM9l8LHdpDaO9C-UvT4kttTI_edSsHv1o5b
+lWZ5mBYL</artwork>
+<postamble>(payload body shown in base64 for presentation purposes)</postamble>
 </figure>
 <figure>
 <preamble>Final message undoing all content codings:</preamble>
@@ -465,8 +465,8 @@ Content-Type: text/plain
 </figure>
 <x:note>
 <t>
-  <x:h>Note:</x:h> in this case, the ability to undo the 'aesgcm' is needed
-  to process the response. If 'aesgcm' wasn't listed as acceptable content coding
+  <x:h>Note:</x:h> in this case, the ability to undo the 'aes128gcm' is needed
+  to process the response. If 'aes128gcm' wasn't listed as acceptable content coding
   in the request, the origin server wouldn't be able to use the 'out-of-band'
   mechanism.
 </t>
@@ -901,7 +901,7 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
     <date month="October" year="2016"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-03"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-04"/>
 </reference>
 
 <reference anchor='CONTENTSIG'>
@@ -1309,7 +1309,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-09" anchor="changes.since.09">
 <t>
-  None yet.
+  Updated reference for ENCRYPTENC.
 </t>
 </section>
 </section>

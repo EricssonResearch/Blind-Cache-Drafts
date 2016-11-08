@@ -922,6 +922,19 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <seriesInfo name="Internet-Draft" value="draft-thomson-http-mice-02"/>
 </reference>
 
+
+<reference anchor='RMAP'>
+  <front>
+  <title>Resource Maps</title>
+    <author initials='G' surname='Eriksson' fullname='Goran Eriksson'/>
+    <author initials='C' surname='Holmberg' fullname='Christer Holmberg'/>
+    <author initials='Z' surname='Sarker' fullname='Zaheduzzaman Sarker'/>
+    <author initials='J' surname='Reschke' fullname='Julian Reschke'/>
+    <date month='October' day='31' year='2016' />
+  </front>
+  <seriesInfo name='Internet-Draft' value='draft-eriksson-http-resource-map-00' />
+</reference>
+
 <reference anchor='SCD'>
   <front>
     <title>An Architecture for Secure Content Delegation using HTTP</title>
@@ -1114,9 +1127,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
   </li>
 </ul>
 <t>
-  This specification does not define a format, nor a mechanism to transport
-  the map, but it's a given that some specification using 'out-of-band'
-  coding will do.
+  See <xref target="RMAP"/> for further information.
 </t>
 </section>
 
@@ -1309,7 +1320,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-09" anchor="changes.since.09">
 <t>
-  Updated reference for ENCRYPTENC.
+  Updated reference for ENCRYPTENC. Added RMAP reference.
 </t>
 </section>
 </section>

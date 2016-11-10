@@ -164,11 +164,11 @@ Vary: Accept-Encoding
 be an OOB response like the one above, but doesn't need to.
 </t>
 <figure><artwork type="example">
-  Link: &lt;/map>; rel="http://purl.org/NET/linkrel/resource-map"
+  Link: &lt;/map>; rel="http://purl.org/net/linkrel/resource-map"
 </artwork></figure>
 <t>
   Note that in this example, "/map" is a relative reference identifying the 
-  resource map (relative to the request URI), and "http://purl.org/NET/linkrel/resource-map" is the identifier for the link
+  resource map (relative to the request URI), and "http://purl.org/net/linkrel/resource-map" is the identifier for the link
 relation "resource map".
 </t>
 <t>

@@ -369,7 +369,10 @@ mappedURI =
     
     <section title="IANA Considerations">
         <t>
-            This document currently has no actions for IANA.
+          <cref anchor="media-type">
+            We will need a format definition of the media type and register
+            it; for now let's use "application/http-resource-map+json".
+          </cref>
         </t>
     </section>
 

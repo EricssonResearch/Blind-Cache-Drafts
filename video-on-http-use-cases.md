@@ -20,7 +20,7 @@ Note well II: HTTP/2 also allows for setting priority on responses on sender sid
 
 # The character of H2 streams
 
-HTTP/22 streams can be short leaved; a single request/response of a small web resource using a fast connection may “live” much less than 100 ms. 
+HTTP/2 streams can be short-lived; a single request/response of a small web resource using a fast connection may “live” much less than 100 ms. 
 
 Other streams can be long-lived, for instance subscribing to a notification. There is also the case where a single request can trigger delivery of chunked responses, meaning a number of transport-encoded datagrams carrying the web resource data as a set of chunks, for instance closed or open range requests and chunked reponses. Then there are cases where a request for a resource may trigger the server to push other data as well as sending a response.
 
@@ -70,7 +70,7 @@ During download phase, only streams of ‘A’ type are present. It may however 
 
 As the play-out starts, class ‘B’ fetches are triggered. These should initially have a higher priority, e.g. first three segments, to quickly fill the play-out buffer and start the video rendering.  There are two alternatives: 1) canceling ‘A’ and make new ‘C’ requests, 2) or change priority setting of ‘A’, making them dependent on ‘B’. In the following, the latter approach is taken.
 
-			     B
+  	   B
         /  |  \
     	C1   C2  C3 (previous A)
 
@@ -80,7 +80,7 @@ Note 2: Also the server side processing must not how request/responses for strea
 
 When the play-out buffer is a target fill level, the relative weight can change again, giving some of the capacity to the ‘C’ streams.
 
-   		       0
+   	    0
        /    |    \
        B	 C1.....…Cn w = “less than B”
 

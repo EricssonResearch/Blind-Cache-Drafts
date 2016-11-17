@@ -55,9 +55,9 @@ It may also be that the video segments pre-fetched to the client cache were not 
 
 From to above the following classes of video streams could be foreseen:
 
-A. Download pre-fetch streams								//Download when video not played
+A. Download pre-fetch streams					//Download when video not played
 B. Play-out fetch streams when not in device cache			//Or in HTTP layer cache
-C. Online pre-fetch streams									//Pre-fetching more than play-out rate
+C. Online pre-fetch streams				           //Pre-fetching more than play-out rate
 
 Note: For sake of simplicity, we ignore HTTP/2 push based pre-population of HTTP layer cache for the moment.
 
@@ -70,9 +70,9 @@ During download phase, only streams of ‘A’ type are present. It may however 
 
 As the play-out starts, class ‘B’ fetches are triggered. These should initially have a higher priority, e.g. first three segments, to quickly fill the play-out buffer and start the video rendering.  There are two alternatives: 1) canceling ‘A’ and make new ‘C’ requests, 2) or change priority setting of ‘A’, making them dependent on ‘B’. In the following, the latter approach is taken.
 
-  	   B
+           B
         /  |  \
-    	C1   C2  C3 (previous A)
+      C1   C2  C3 (previous A)
 
 Note 1: It is essential that the UA and server does not "hog" requests or responses used to fill the play-out buffer when critically low, for instance during initialization. This may require a "no_hog" flag to the UA.
 
@@ -80,8 +80,8 @@ Note 2: Also the server side processing must not how request/responses for strea
 
 When the play-out buffer is a target fill level, the relative weight can change again, giving some of the capacity to the ‘C’ streams.
 
-   	    0
-       /    |    \
+             0
+        /    |    \
        B	 C1.....…Cn w = “less than B”
 
 The client may decide to be more or less aggressive in pre-fetching streams and change the priority of C streams, either by stopping some of them, for instance making Cx explicitly dependent on C1, or changing relative priority.

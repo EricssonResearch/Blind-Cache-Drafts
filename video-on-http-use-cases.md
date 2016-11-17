@@ -90,7 +90,7 @@ Note 2: Some media players adaptive bitrate algorithm relies (partly) on bandwid
 
 This realization example shows the need to be able to change the priority of a stream after initialization of the fetch API. Some of the desired behavior can be achieved by proper JS logic, such as stopping Cn>1 requests or pacing them.
 
-The video segments can either be retrieved individually or as a set of chunked responses, either closed, open with or without additional pushed streams. This may impact design to secure how to “keep a handle” to the request after fetch() invocation.
+The video segments can either be retrieved individually or as a set of chunked responses, either closed, open with or without additional pushed streams. This may impact design to secure how to “keep a handle” to the request after fetch() initialisation.
 
 
 # Ack's

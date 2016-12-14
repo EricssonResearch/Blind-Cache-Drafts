@@ -83,9 +83,9 @@
       XML versions, latest edits, and issue tracking for this document
       are available from <eref target="https://github.com/EricssonResearch/Blind-Cache-Drafts"/>.
     </t>
-    <!--<t>
-      The changes in this draft are summarized in <xref target="changes.since.08"/>.
-    </t>-->
+    <t>
+      The changes in this draft are summarized in <xref target="changes.since.00"/>.
+    </t>
   </note>
 </front>
 
@@ -164,11 +164,11 @@ Vary: Accept-Encoding
 be an OOB response like the one above, but doesn't need to.
 </t>
 <figure><artwork type="example">
-  Link: &lt;/map>; rel="http://purl.org/net/linkrel/resource-map"
+  Link: &lt;/map>; rel="http://purl.org/linkrel/resource-map"
 </artwork></figure>
 <t>
   Note that in this example, "/map" is a relative reference identifying the 
-  resource map (relative to the request URI), and "http://purl.org/net/linkrel/resource-map" is the identifier for the link
+  resource map (relative to the request URI), and "http://purl.org/linkrel/resource-map" is the identifier for the link
 relation "resource map".
 </t>
 <t>
@@ -557,7 +557,11 @@ A Resource Map for the case when resources on "https://origin.example.com:8080" 
   </section>
 
   <section title="Change Log (To be removed before publication as RFC">
-    <t>Nothing yet.</t>
+    <section title="Since draft-eriksson-http-resource-map-00" anchor="changes.since.00">
+      <t>
+        Adjust link relation name.
+      </t>
+    </section>
   </section>
 
   

@@ -986,7 +986,7 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 <figure>
 <preamble>Link relation:</preamble>
 <artwork type="example">
-http://purl.org/net/linkrel/not-reachable</artwork>
+http://purl.org/linkrel/not-reachable</artwork>
 </figure>
 </section>
 
@@ -997,7 +997,7 @@ http://purl.org/net/linkrel/not-reachable</artwork>
 <figure>
 <preamble>Link relation:</preamble>
 <artwork type="example">
-http://purl.org/net/linkrel/resource-not-found</artwork>
+http://purl.org/linkrel/resource-not-found</artwork>
 </figure>
 </section>
 
@@ -1009,7 +1009,7 @@ http://purl.org/net/linkrel/resource-not-found</artwork>
 <figure>
 <preamble>Link relation:</preamble>
 <artwork type="example">
-http://purl.org/net/linkrel/payload-unusable</artwork>
+http://purl.org/linkrel/payload-unusable</artwork>
 </figure>
 </section>
 
@@ -1020,7 +1020,7 @@ http://purl.org/net/linkrel/payload-unusable</artwork>
 <figure>
 <preamble>Link relation:</preamble>
 <artwork type="example">
-http://purl.org/net/linkrel/tls-handshake-failure</artwork>
+http://purl.org/linkrel/tls-handshake-failure</artwork>
 </figure>
 </section>
 
@@ -1048,7 +1048,7 @@ GET /test HTTP/1.1
 Host: www.example.com
 Accept-Encoding: gzip, out-of-band
 Link: &lt;http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
-      rel="http://purl.org/net/linkrel/resource-not-found"
+      rel="http://purl.org/linkrel/resource-not-found"
 
 </artwork></figure>
 </section>
@@ -1099,7 +1099,7 @@ Link: &lt;http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 GET /bae27c36-fa6a-11e4-ae5d-00059a3c7a00 HTTP/1.1
 Host: example.net
 Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
-      rel="http://purl.org/net/linkrel/fallback-resource"
+      rel="http://purl.org/linkrel/fallback-resource"
 
 </artwork>
 <postamble>
@@ -1321,7 +1321,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 <section title="Changes since draft-reschke-http-oob-encoding-09" anchor="changes.since.09">
 <t>
   Updated reference for ENCRYPTENC. Added RMAP reference.
-  Use all-lowercase PURLs.
+  Use all-lowercase PURLs and remove "/net" in them.
 </t>
 </section>
 </section>

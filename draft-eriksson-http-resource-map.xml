@@ -414,9 +414,9 @@ mappedURI =
         <title>'Out-Of-Band' Content Coding for HTTP</title>
         <author initials='J' surname='Reschke' fullname='Julian F. Reschke'/>
         <author initials='S' surname='Loreto' fullname='Salvatore Loreto'/>
-        <date month='October' year='2016'/>
+        <date month='December' year='2016'/>
       </front>
-      <seriesInfo name="Internet-Draft" value="draft-reschke-http-oob-09"/>
+      <seriesInfo name="Internet-Draft" value="draft-reschke-http-oob-10"/>
     </reference>
   </references>
   
@@ -560,6 +560,9 @@ A Resource Map for the case when resources on "https://origin.example.com:8080" 
     <section title="Since draft-eriksson-http-resource-map-00" anchor="changes.since.00">
       <t>
         Adjust link relation name.
+      </t>
+      <t>
+        Update references.
       </t>
     </section>
   </section>

@@ -178,11 +178,24 @@
 <dl>
   <dt>'sr'</dt>
   <dd>
-    A &REQUIRED; array of JSON objects. Objects having a member named 'r'
-    describe a secondary resource, with the member's string value containing
-    a URI reference (<xref target="RFC3986" x:sec="4.1"/>) of the secondary
-    resource (URI references that are relative references are resolved against
-    the URI of the primary resource).
+    <t>
+      A &REQUIRED; array of JSON objects.
+    </t>
+    <t>  
+      Objects having a member named 'r'
+      describe a secondary resource, with the member's string value containing
+      a URI reference (<xref target="RFC3986" x:sec="4.1"/>) of the secondary
+      resource (URI references that are relative references are resolved against
+      the URI of the primary resource).
+    </t>
+    <t>
+      An &OPTIONAL; member 'crypto-key'
+      carries an array of strings, each of which specifying keying material
+      for use in encryption encodings such as the 'aes128gcm' encoding
+      defined in <xref target="ENCRYPTENC"/>. Values consist of the
+      name of the content coding, a "=", and the base64url encoded keying
+      material (see <xref target="RFC4648" x:fmt="of" x:sec="5"/>). 
+    </t>
   </dd>
 <!--  <dt>'fallback'</dt>
   <dd>
@@ -413,10 +426,10 @@ treated the same way.
 
 <section title="Example involving an encrypted resource">
 <t>
-  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="4.1"/>,
+  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="3.1"/>,
   a primary resource could use the 'out-of-band' coding to specify just
-  the location of the secondary resource plus the contents of the 
-  "Crypto-Key" header field needed to decrypt the payload: 
+  the location of the secondary resource plus the keying material
+  needed to decrypt the payload: 
 </t>
 <figure>
 <preamble>Response:</preamble>
@@ -425,14 +438,15 @@ HTTP/1.1 200 OK
 Date: Thu, 14 May 2015 18:52:00 GMT
 Content-Encoding: aes128gcm, out-of-band
 Content-Type: text/plain
-Crypto-Key: aes128gcm=B33e_VeFrOyIHwFTIfmesA
 Content-Length: <x:length-of target="exbody4"/>
 Vary: Accept-Encoding
 
 <x:span anchor="exbody4" x:lang="">{
   "sr": [
     { "r" :
-      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00"}
+      "http://example.net/bae27c36-fa6a-11e4-ae5d-00059a3c7a00",
+      "crypto-key" :
+      [ "aes128gcm=yqdlZ-tYemfogSmv7Ws5PQ" ] }
   ]
 }
 </x:span></artwork>
@@ -447,10 +461,10 @@ Vary: Accept-Encoding
 HTTP/1.1 200 OK
 Date: Thu, 14 May 2015 18:52:10 GMT
 Content-Type: application/oob-stream
-Content-Length: ...
+Content-Length: 54
 
-9Y1iaZMzICC05DO3y8dWiAAAopoAzpM9l8LHdpDaO9C-UvT4kttTI_edSsHv1o5b
-lWZ5mBYL</artwork>
+I1BsxtFttlv3u_Oo94xnmwAAEAAA-NAVub2qFgBEuQKRapoZu-IxkIva3MEB1PD-
+ly8Thjg</artwork>
 <postamble>(payload body shown in base64 for presentation purposes)</postamble>
 </figure>
 <figure>
@@ -853,6 +867,15 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <seriesInfo name='RFC' value='4483' />
 </reference>
 
+<reference anchor="RFC4648">
+  <front>
+    <title>The Base16, Base32, and Base64 Data Encodings</title>
+    <author fullname="S. Josefsson" initials="S." surname="Josefsson"/>
+    <date year="2006" month="October"/>
+  </front>
+  <seriesInfo value="4648" name="RFC"/>
+</reference>
+
 <reference anchor="RFC5246">
   <front>
     <title>The Transport Layer Security (TLS) Protocol Version 1.2</title>
@@ -899,9 +922,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <front>
     <title>Encrypted Content-Encoding for HTTP</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="October" year="2016"/>
+    <date month="March" year="2017"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-04"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-08"/>
 </reference>
 
 <reference anchor='CONTENTSIG'>
@@ -1326,7 +1349,8 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-10" anchor="changes.since.10">
 <t>
-  None yet.
+  Updated reference for ENCRYPTENC: instead of using Crypto-Key response
+  header field move the key material into the OOB payload.
 </t>
 </section>
 </section>

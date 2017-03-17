@@ -999,9 +999,6 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
 <t>
   The following link extension relations are defined:
 </t>
-<t>
-  <cref anchor="purl">need to register PURLs (now hosted by archive.org, FWIW)</cref>
-</t>
 <section title="Server Not Reachable" anchor="rel-not-reachable">
 <t>
   Used in case the server was not reachable.
@@ -1355,7 +1352,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </section>
 <section title="Changes since draft-reschke-http-oob-encoding-11" anchor="changes.since.11">
 <t>
-  None yet.
+  Removed note about registration of purl URIs for link relations.
 </t>
 </section>
 </section>

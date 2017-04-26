@@ -922,9 +922,9 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <front>
     <title>Encrypted Content-Encoding for HTTP</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="March" year="2017"/>
+    <date month="April" year="2017"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-08"/>
+  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-09"/>
 </reference>
 
 <reference anchor='CONTENTSIG'>
@@ -1353,6 +1353,9 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 <section title="Changes since draft-reschke-http-oob-encoding-11" anchor="changes.since.11">
 <t>
   Removed note about registration of purl URIs for link relations.
+</t>
+<t>
+  Updated reference for ENCRYPTENC (now in RFC Editor queue).
 </t>
 </section>
 </section>

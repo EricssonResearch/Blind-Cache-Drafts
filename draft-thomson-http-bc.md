@@ -2,7 +2,7 @@
 title: Caching Secure HTTP Content using Blind Caches
 abbrev: Blind Cache
 docname: draft-thomson-http-bc
-date: 2016
+date: 2017
 category: std
 ipr: trust200902
 

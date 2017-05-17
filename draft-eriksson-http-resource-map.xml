@@ -414,9 +414,9 @@ mappedURI =
         <title>'Out-Of-Band' Content Coding for HTTP</title>
         <author initials='J' surname='Reschke' fullname='Julian F. Reschke'/>
         <author initials='S' surname='Loreto' fullname='Salvatore Loreto'/>
-        <date month='December' year='2016'/>
+        <date month='March' year='2017'/>
       </front>
-      <seriesInfo name="Internet-Draft" value="draft-reschke-http-oob-10"/>
+      <seriesInfo name="Internet-Draft" value="draft-reschke-http-oob-encoding-11"/>
     </reference>
   </references>
   

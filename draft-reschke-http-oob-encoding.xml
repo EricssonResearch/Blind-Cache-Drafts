@@ -1355,7 +1355,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
   Removed note about registration of purl URIs for link relations.
 </t>
 <t>
-  Updated reference for ENCRYPTENC (now in RFC 8188).
+  Updated reference for ENCRYPTENC (now RFC 8188).
 </t>
 </section>
 </section>

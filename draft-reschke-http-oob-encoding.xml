@@ -89,7 +89,7 @@
       <eref target="http://greenbytes.de/tech/webdav/#draft-reschke-http-oob-encoding"/>.
     </t>
     <t>
-      The changes in this draft are summarized in <xref target="changes.since.11"/>.
+      The changes in this draft are summarized in <xref target="changes.since.12"/>.
     </t>
   </note>
 
@@ -1356,6 +1356,11 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 </t>
 <t>
   Updated reference for ENCRYPTENC (now RFC 8188).
+</t>
+</section>
+<section title="Changes since draft-reschke-http-oob-encoding-12" anchor="changes.since.12">
+<t>
+  None yet.
 </t>
 </section>
 </section>

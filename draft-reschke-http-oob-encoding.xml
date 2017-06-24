@@ -108,7 +108,7 @@
   to securely delegate the delivery of content to a secondary server that might
   be "closer" to the client (with respect to network topology) and/or
   able to cache content (<xref target="SCD"/>), leveraging content encryption
-  (<xref target="ENCRYPTENC"/>).
+  (<xref target="RFC8188"/>).
 </t>
 </section>
 
@@ -192,7 +192,7 @@
       An &OPTIONAL; member 'crypto-key'
       carries an array of strings, each of which specifying keying material
       for use in encryption encodings such as the 'aes128gcm' encoding
-      defined in <xref target="ENCRYPTENC"/>. Values consist of the
+      defined in <xref target="RFC8188"/>. Values consist of the
       name of the content coding, a "=", and the base64url encoded keying
       material (see <xref target="RFC4648" x:fmt="of" x:sec="5"/>). 
     </t>
@@ -426,7 +426,7 @@ treated the same way.
 
 <section title="Example involving an encrypted resource">
 <t>
-  Given the example HTTP message from <xref target="ENCRYPTENC" x:sec="3.1"/>,
+  Given the example HTTP message from <xref target="RFC8188" x:sec="3.1"/>,
   a primary resource could use the 'out-of-band' coding to specify just
   the location of the secondary resource plus the keying material
   needed to decrypt the payload: 
@@ -644,7 +644,7 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   </t>
 </aside>
 <t>
-  Requiring the secondary resource's payload to be encrypted (<xref target="ENCRYPTENC"/>)
+  Requiring the secondary resource's payload to be encrypted (<xref target="RFC8188"/>)
   is an additional mitigation.
 </t>
 </section>
@@ -918,13 +918,13 @@ coded response body would be shorter than 100000 bytes, as would be usually the 
   <x:source href="refs/rfc7233.xml" basename="rfc7233"/>
 </reference>
 
-<reference anchor='ENCRYPTENC'>
+<reference anchor='RFC8188'>
   <front>
     <title>Encrypted Content-Encoding for HTTP</title>
     <author initials="M." surname="Thomson" fullname="Martin Thomson"/>
-    <date month="April" year="2017"/>
+    <date month="June" year="2017"/>
   </front>
-  <seriesInfo name="Internet-Draft" value="draft-ietf-httpbis-encryption-encoding-09"/>
+  <seriesInfo name="RFC" value="8188"/>
 </reference>
 
 <reference anchor='CONTENTSIG'>
@@ -1173,7 +1173,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
 
 <section title="Relation to Content Encryption">
 <t>
-  Right now this specification is orthogonal to <xref target="ENCRYPTENC"/>/<xref target="MICE"/>; that is, it could be
+  Right now this specification is orthogonal to <xref target="RFC8188"/>/<xref target="MICE"/>; that is, it could be
   used for public content such as software downloads. However, the lack of mandatory encryption
   affects the security considerations (which currently try to rule attack vectors
   caused by ambient authority (<xref target="RFC6265" x:fmt="," x:sec="8.2"/>).
@@ -1355,7 +1355,7 @@ Link: &lt;http://example.com/c/bae27c36-fa6a-11e4-ae5d-00059a3c7a00>;
   Removed note about registration of purl URIs for link relations.
 </t>
 <t>
-  Updated reference for ENCRYPTENC (now in RFC Editor queue).
+  Updated reference for ENCRYPTENC (now in RFC 8188).
 </t>
 </section>
 </section>
